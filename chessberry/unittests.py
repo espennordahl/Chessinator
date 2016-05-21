@@ -18,6 +18,11 @@ class TestMoveLogic(unittest.TestCase):
 		self.assertFalse(self.game.isMoveLegal(newMove))
 		self.assertFalse(self.game.applyMove(newMove))
 
+class TestGameState(unittest.TestCase):
+	def testDefaultFEN(self):
+		game = Game()
+		self.assertEquals(game.fen(), 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
+## 
 
 if __name__ == '__main__':
 	unittest.main()
