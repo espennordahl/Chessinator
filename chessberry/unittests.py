@@ -21,7 +21,7 @@ class TestMoveLogic(unittest.TestCase):
 class TestGameState(unittest.TestCase):
 	def testDefaultFEN(self):
 		game = Game()
-		self.assertEquals(game.fen(), 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
+		self.assertEquals(game.fen(), 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
 ## 
 
 if __name__ == '__main__':
