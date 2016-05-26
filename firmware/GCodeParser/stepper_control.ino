@@ -42,7 +42,7 @@ void init_steppers()
 	
 	//figure our stuff.
 	calculate_deltas();
-        goto_machine_zero();
+  goto_machine_zero();
 }
 
 void goto_machine_zero()
