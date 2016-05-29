@@ -20,13 +20,83 @@ def isInt(s):
         return False
 
 
+def letterToIndex(letter):
+	if letter == "a":
+		return 0
+	if letter == "b":
+		return 1
+	if letter == "c":
+		return 2
+	if letter == "d":
+		return 3
+	if letter == "e":
+		return 4
+	if letter == "f":
+		return 5
+	if letter == "g":
+		return 6
+	if letter == "h":
+		return 7
+
+def indexToLetter(index):
+	l = "abcdefgh"
+	return l[index]
+
 class Move():
-	def __init__(self, color, uciMove):
-		self._uci = uciMove
+	def __init__(self, color, pgnMove):
+		self._pgn = pgnMove
 		self._color = color
-	
+		self._toRank = None
+		self._fromRank = None
+		self._toLetter = None
+		self._fromLetter = None
+
+	def conformMove(self, board):
+		if len(self._pgn) == 2:
+			## pawn move
+			self._toRank = int(self._pgn[1]) - 1
+			self._toLetter = letterToIndex(self._pgn[0])
+			## TODO: Support single rank first moves for pawns
+			if self._toRank == 3:
+				self._fromRank = 1
+			elif self._toRank == 4:
+				self._fromRank = 6
+			else:
+				if self._color == color.White:
+					self._fromRank = self._toRank - 1
+				else:
+					self._fromRank = self._toRank + 1
+			self._fromLetter = self._toLetter
+		
+		if len(self._pgn) == 3:
+			## normal piece move
+			self._toRank = int(self._pgn[2]) - 1
+			self._toLetter = letterToIndex(self._pgn[1])
+			## Search for candidate piece to move
+			if self._pgn[0] == "N":
+				shortestDistance = 99
+				candidateIndices = None
+				rankIndex = 0
+				for rank in board:
+					letterIndex = 0
+					for square in rank:
+						if square != None and square.color() == self._color and square.type() == Type.knight:
+							##TODO: naive distance metric. Should be improved
+							distance = abs(rankIndex - self._toRank) + abs(letterIndex - self._toLetter)
+							if distance < shortestDistance:
+								candidateIndices = (rankIndex, letterIndex)
+						letterIndex += 1
+					rankIndex += 1
+
+				if candidateIndices == None:
+					raise Exception("Couldnt find candidate piece for move.")
+				else:
+					self._fromRank = candidateIndices[0]
+					self._fromLetter = candidateIndices[1]
+				
+
 	def isLegal(self):
-		if not self._checkUCI():
+		if not self._checkPGN():
 			return False
 		
 		if not self._checkColor():
@@ -34,18 +104,38 @@ class Move():
 		
 		return True
 
-	def _checkUCI(self):
-		if not isinstance(self._uci, basestring):
+	def toRank(self):
+		if self._toRank == None:
+			raise Exception ("move not conformed yet.")
+		return self._toRank
+
+	def fromRank(self):
+		if self._fromRank == None:
+			raise Exception ("move not conformed yet.")
+		return self._fromRank
+
+	def toLetter(self):
+		if self._toLetter == None:
+			raise Exception ("move not conformed yet.")
+		return self._toLetter
+
+	def fromLetter(self):
+		if self._toLetter == None:
+			raise Exception ("move not conformed yet.")
+		return self._fromLetter
+
+	def _checkPGN(self):
+		if not isinstance(self._pgn, basestring):
 			return False
 		
-		if len(self._uci) < 2 or len(self._uci) > 4:
+		if len(self._pgn) < 2 or len(self._pgn) > 4:
 			return False
 
-		if len(self._uci) == 2:
-			if self._uci[0] not in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'):
+		if len(self._pgn) == 2:
+			if self._pgn[0] not in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'):
 				return False
 
-			if self._uci[1] not in ('1', '2', '3', '4', '5', '6', '7', '8'):
+			if self._pgn[1] not in ('1', '2', '3', '4', '5', '6', '7', '8'):
 				return False
 		
 		return True
@@ -97,6 +187,12 @@ class Piece():
 		else:
 			return fenstring.upper()
 
+	def type(self):
+		return self._type
+	
+	def color(self):
+		return self._color
+
 
 class Game():
 	def __init__(self):
@@ -121,8 +217,42 @@ class Game():
 		return move.isLegal()
 	
 	def applyMove(self, move):
-		return move.isLegal()
-	
+		if not move.isLegal():
+			return False
+
+		move.conformMove(self._board)
+
+		pieceToMove = self._board[move.fromRank()][move.fromLetter()] 
+		self._board[move.fromRank()][move.fromLetter()] = None
+
+		self._board[move.toRank()][move.toLetter()] = pieceToMove
+
+		## An passant target square is specified after a double push, 
+		## regardless of whether an en passant capture is really possible
+		if pieceToMove.type() == Type.pawn:
+			if abs(move.fromRank() - move.toRank()) == 2:
+				enPassantTargetRankStr = "3"
+				if pieceToMove.color() == Color.black:
+					enPassantTargetRankStr = "6"
+				self._enPassantTargetSquare = indexToLetter(move.fromLetter()) + enPassantTargetRankStr
+		else:
+			self._enPassantTargetSquare = "-"
+
+		## The halfmove clock is reset after a pawn move or capture, and incremented otherwise
+		if pieceToMove.type() == Type.pawn:
+			self._halfMoveClock = 0
+		else:
+			self._halfMoveClock += 1
+
+		if pieceToMove.color() == Color.black:
+			self._fullMoveCounter += 1
+			self._sideToMove = Color.white
+		else:
+			self._sideToMove = Color.black
+			
+
+		return True
+
 	def applyfen(self, fenstring):
 		fenarray = fenstring.split(' ')
 		
