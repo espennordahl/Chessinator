@@ -19,6 +19,8 @@ def isInt(s):
     except ValueError:
         return False
 
+
+
 def letterToIndex(letter):
 	if letter == "a":
 		return 0
