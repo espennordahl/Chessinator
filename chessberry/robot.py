@@ -9,6 +9,7 @@ class Robot:
 		self._isReady = False
 		self._position = None
 
+
 	def isReady(self):
 		return self._isReady
 
