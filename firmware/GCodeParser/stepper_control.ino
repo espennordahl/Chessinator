@@ -59,6 +59,10 @@ void move_to_max(int limiter_pin, int stepper_pin, int stepper_dir_pin,int dir)
   */
   while(can_step(limiter_pin, limiter_pin, 0, 1, dir)){
     do_step(stepper_pin, stepper_dir_pin, 0);
+    // Moving 3 steps at the time as once was a bit slow. 
+    // Note: This could be a very bad idea!
+    do_step(stepper_pin, stepper_dir_pin, 0);
+    do_step(stepper_pin, stepper_dir_pin, 0);
     delay(1);
   }
   // slowly back unitl pin is released

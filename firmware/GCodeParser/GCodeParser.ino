@@ -13,8 +13,8 @@ float Z_STEPS_PER_MM   = 40;
 int Z_MOTOR_STEPS    = 100;
 
 //our maximum feedrates
-long FAST_XY_FEEDRATE = 2000;
-long FAST_Z_FEEDRATE = 2000;
+long FAST_XY_FEEDRATE = 20000;
+long FAST_Z_FEEDRATE = 1000;
 
 // Units in curve section
 #define CURVE_SECTION_INCHES 0.019685
@@ -73,7 +73,7 @@ void setup()
 	init_process_string();
 	init_steppers();
 	process_string("G90",3);//Absolute Position
-        Serial.println("start");
+  Serial.println("start");
 }
 
 void loop()
