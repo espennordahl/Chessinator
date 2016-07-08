@@ -143,9 +143,9 @@ void dda_move(long micro_delay)
 			
 			if (z_counter > 0)
 			{
-                                if(Z_ENABLE_SERVO==0){
+                                //if(Z_ENABLE_SERVO==0){
 				  do_step(Z_STEP_PIN, Z_DIR_PIN, z_direction);
-                                }
+                                //}
 				z_counter -= max_delta;
 				
 				if (z_direction)

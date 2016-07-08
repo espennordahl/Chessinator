@@ -13,7 +13,7 @@ float Z_STEPS_PER_MM   = 40;
 int Z_MOTOR_STEPS    = 100;
 
 //our maximum feedrates
-long FAST_XY_FEEDRATE = 20000;
+long FAST_XY_FEEDRATE = 2000;
 long FAST_Z_FEEDRATE = 1000;
 
 // Units in curve section
@@ -37,7 +37,7 @@ int X_STEP_PIN = 11;
 int X_DIR_PIN = 10;
 int X_ENABLE_PIN = 4;
 int X_MIN_PIN = A0;
-int X_MAX_PIN = A1; // Hack for now!
+int X_MAX_PIN = A7; // Hack for now!
 
 int Y_STEP_PIN = 9;
 int Y_DIR_PIN = 3; 
@@ -46,11 +46,11 @@ int Y_MIN_PIN = 12;
 int Y_MAX_PIN = 13;
 
 int Z_STEP_PIN = A1;
-int Z_DIR_PIN = 13;
+int Z_DIR_PIN = A1;
 int Z_ENABLE_PIN = 4;
-int Z_MIN_PIN = A1;
-int Z_MAX_PIN = A0;
-int Z_ENABLE_SERVO = 0;
+int Z_MIN_PIN = 12;
+int Z_MAX_PIN = 13;
+int Z_ENABLE_SERVO = 1;
 #define COMMAND_SIZE 128
 
 char commands[COMMAND_SIZE];
