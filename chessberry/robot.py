@@ -4,10 +4,11 @@ import serial
 DEFAULT_MOTOR_SPEED = 10000
 
 class Robot:
-	def __init__(self):
-		self._serial = serial.Serial('/dev/cu.wchusbserial1420', 115200)
+	def __init__(self, port = '/dev/cu.wchusbserial1420'):
+		self._serial = serial.Serial(port, 115200)
 		self._isReady = False
 		self._position = None
+
 
 	def isReady(self):
 		return self._isReady
