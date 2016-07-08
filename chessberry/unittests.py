@@ -66,9 +66,9 @@ class TestGameState(unittest.TestCase):
 
 		i = 0
 		for move in moves:
-			self.assertTrue(move.isLegal())
-			self.assertTrue(game.isMoveLegal(move))
-			self.assertTrue(game.applyMove(move))
+			self.assertTrue(move.isLegal(), 'Failed on Move ' + str(i+1) )
+			self.assertTrue(game.isMoveLegal(move), 'Failed on Move ' + str(i+1) )
+			self.assertTrue(game.applyMove(move), 'Failed on Move ' + str(i+1) )
 			self.assertEquals(game.fen(), fen[i], 'Failed on Move ' + str(i+1) + ". Should be: \n" + repr(fen[i]) + ". Was: \n" + repr(game.fen()) )
 			i += 1
 

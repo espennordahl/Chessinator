@@ -54,48 +54,58 @@ class Move():
 
 	def conformMove(self, board):
 		if len(self._pgn) == 2:
-			## pawn move
-			self._toRank = int(self._pgn[1]) - 1
-			self._toLetter = letterToIndex(self._pgn[0])
-			## TODO: Support single rank first moves for pawns
-			if self._toRank == 3:
-				self._fromRank = 1
-			elif self._toRank == 4:
-				self._fromRank = 6
-			else:
-				if self._color == Color.white:
-					self._fromRank = self._toRank - 1
-				else:
-					self._fromRank = self._toRank + 1
-			self._fromLetter = self._toLetter
-		
-		if len(self._pgn) == 3:
+			self._conformPawnMove(board)
+		elif len(self._pgn) == 3:
 			## normal piece move
 			self._toRank = int(self._pgn[2]) - 1
 			self._toLetter = letterToIndex(self._pgn[1])
-			## Search for candidate piece to move
 			if self._pgn[0] == "N":
-				shortestDistance = 99
-				candidateIndices = None
-				rankIndex = 0
-				for rank in board:
-					letterIndex = 0
-					for square in rank:
-						if square != None and square.color() == self._color and square.type() == Type.knight:
-							##TODO: naive distance metric. Should be improved
-							distance = abs(rankIndex - self._toRank) + abs(letterIndex - self._toLetter)
-							if distance < shortestDistance:
-								candidateIndices = (rankIndex, letterIndex)
-						letterIndex += 1
-					rankIndex += 1
+				self._conformKnightMove(board)
+			elif self._pgn[0] == "B":
+				self._conformBishopMove(board)
+		else:
+			raise Exception("Unsupported pgn length: " + self._pgn) 
 
-				if candidateIndices == None:
-					raise Exception("Couldnt find candidate piece for move.")
-				else:
-					self._fromRank = candidateIndices[0]
-					self._fromLetter = candidateIndices[1]
-				
 
+	def _conformPawnMove(self, board):
+		self._toRank = int(self._pgn[1]) - 1
+		self._toLetter = letterToIndex(self._pgn[0])
+		if self._toRank == 3:
+			self._fromRank = 1
+		elif self._toRank == 4:
+			self._fromRank = 6
+		else:
+			if self._color == Color.white:
+				self._fromRank = self._toRank - 1
+			else:
+				self._fromRank = self._toRank + 1
+		self._fromLetter = self._toLetter
+		
+	def _conformKnightMove(self, board):
+		shortestDistance = 99
+		candidateIndices = None
+		rankIndex = 0
+		for rank in board:
+			letterIndex = 0
+			for square in rank:
+				if square != None and square.color() == self._color and square.type() == Type.knight:
+					##TODO: naive distance metric. Should be improved
+					distance = abs(rankIndex - self._toRank) + abs(letterIndex - self._toLetter)
+					if distance < shortestDistance:
+						candidateIndices = (rankIndex, letterIndex)
+				letterIndex += 1
+			rankIndex += 1
+
+		if candidateIndices == None:
+			raise Exception("Couldnt find candidate piece for move.")
+		else:
+			self._fromRank = candidateIndices[0]
+			self._fromLetter = candidateIndices[1]
+	
+	def _conformBishopMove(self, board):
+		## search along diagonal
+		return
+		
 	def isLegal(self):
 		if not self._checkPGN():
 			return False
@@ -107,22 +117,22 @@ class Move():
 
 	def toRank(self):
 		if self._toRank == None:
-			raise Exception ("move not conformed yet.")
+			raise Exception ("move not conformed yet. PGN: " + self._pgn)
 		return self._toRank
 
 	def fromRank(self):
 		if self._fromRank == None:
-			raise Exception ("move not conformed yet.")
+			raise Exception ("move not conformed yet. PGN: " + self._pgn)
 		return self._fromRank
 
 	def toLetter(self):
 		if self._toLetter == None:
-			raise Exception ("move not conformed yet.")
+			raise Exception ("move not conformed yet. PGN: " + self._pgn)
 		return self._toLetter
 
 	def fromLetter(self):
 		if self._toLetter == None:
-			raise Exception ("move not conformed yet.")
+			raise Exception ("move not conformed yet. PGN: " + self._pgn)
 		return self._fromLetter
 
 	def _checkPGN(self):
@@ -236,6 +246,8 @@ class Game():
 				if pieceToMove.color() == Color.black:
 					enPassantTargetRankStr = "6"
 				self._enPassantTargetSquare = indexToLetter(move.fromLetter()) + enPassantTargetRankStr
+			else:
+				self._enPassantTargetSquare = "-"
 		else:
 			self._enPassantTargetSquare = "-"
 
