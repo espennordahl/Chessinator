@@ -63,7 +63,7 @@ class Move():
 			elif self._toRank == 4:
 				self._fromRank = 6
 			else:
-				if self._color == color.White:
+				if self._color == Color.white:
 					self._fromRank = self._toRank - 1
 				else:
 					self._fromRank = self._toRank + 1
@@ -337,3 +337,18 @@ class Game():
 		fen.append(str(self._fullMoveCounter))
 
 		return " ".join(fen)
+
+def pgnGameToMoves(pgn):
+	elements = pgn.split(' ')
+	moves = []
+	currentPlayer = Color.white
+	for element in elements:
+		if element[0] not in '1234567890':
+			moves.append(Move(currentPlayer, element.strip()))
+			if currentPlayer == Color.white:
+				currentPlayer = Color.black
+			else:
+				currentPlayer = Color.white
+
+	return moves
+
