@@ -4,6 +4,7 @@ from game import *
 from piece import *
 from utils import *
 from move import *
+from board import *
 
 ## TODO:
 ## - pawn takes
@@ -15,6 +16,29 @@ from move import *
 ## - move legality rook
 ## - move legality bishop
 ## - system event loop
+
+class TestCoordinates(unittest.TestCase):
+	def testPGNassignment(self):
+		coord = Coordinate(pgn="b2")
+		self.assertEquals(coord.index, [1,1])
+		self.assertEquals(coord.pgn, "b2")
+		
+	def testIndexAssignment(self):
+		coord = Coordinate(index=[2,3])
+		self.assertEquals(coord.index, [2,3])
+		self.assertEquals(coord.pgn, "c4")
+
+	def testBadIndices(self):
+		self.assertRaises(Exception, Coordinate, pgn="y31")
+		self.assertRaises(Exception, Coordinate, pgn="23")
+		self.assertRaises(Exception, Coordinate, pgn="a0")
+		self.assertRaises(Exception, Coordinate, pgn="u2")
+		self.assertRaises(Exception, Coordinate, pgn=[2,3])
+		self.assertRaises(Exception, Coordinate, index="a3")
+		self.assertRaises(Exception, Coordinate, index=[8,2])
+		self.assertRaises(Exception, Coordinate, index=[2,9])
+		self.assertRaises(Exception, Coordinate, index=[2,2,3])
+		self.assertRaises(Exception, Coordinate, index=30)
 
 class TestMoveLogic(unittest.TestCase):
 	def setUp(self):
