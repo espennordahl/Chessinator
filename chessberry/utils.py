@@ -1,4 +1,10 @@
-prom enum import Enum
+from enum import Enum
+
+from utils import *
+
+class Color(Enum):
+	black = 0
+	white = 1
 
 def isInt(s):
     try: 
@@ -32,17 +38,4 @@ def indexToLetter(index):
 	return l[index]
 
 
-def pgnGameToMoves(pgn):
-	elements = pgn.split(' ')
-	moves = []
-	currentPlayer = Color.white
-	for element in elements:
-		if element[0] not in '1234567890':
-			moves.append(Move(currentPlayer, element.strip()))
-			if currentPlayer == Color.white:
-				currentPlayer = Color.black
-			else:
-				currentPlayer = Color.white
-
-	return moves
 

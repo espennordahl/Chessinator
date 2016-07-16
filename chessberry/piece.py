@@ -1,6 +1,6 @@
-class Color(Enum):
-	black = 0
-	white = 1
+from enum import Enum
+
+from utils import *
 
 class Type(Enum):
 	pawn = 0

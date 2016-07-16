@@ -1,3 +1,8 @@
+
+
+from utils import *
+from piece import *
+
 class Move():
 	def __init__(self, color, pgnMove):
 		self._pgn = pgnMove
@@ -112,4 +117,17 @@ class Move():
 
 		return True
 
+def pgnGameToMoves(pgn):
+	elements = pgn.split(' ')
+	moves = []
+	currentPlayer = Color.white
+	for element in elements:
+		if element[0] not in '1234567890':
+			moves.append(Move(currentPlayer, element.strip()))
+			if currentPlayer == Color.white:
+				currentPlayer = Color.black
+			else:
+				currentPlayer = Color.white
+
+	return moves
 

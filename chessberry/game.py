@@ -1,3 +1,9 @@
+
+
+from utils import *
+from piece import *
+from move import *
+
 class Game():
 	def __init__(self):
 		## init board

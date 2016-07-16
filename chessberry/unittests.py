@@ -1,6 +1,9 @@
 import unittest
 
-from chess import Game, Move, Color, pgnGameToMoves
+from game import *
+from piece import *
+from utils import *
+from move import *
 
 ## TODO:
 ## - pawn takes
