@@ -60,7 +60,7 @@ class TestMoveLogic(unittest.TestCase):
 		legalMove = Move(Color.white, 'a4')
 		self.assertTrue(self.game.isMoveLegal(legalMove))	
 
-class TestGameState(unittest.TestCase):
+class TestGameState():#unittest.TestCase):
 	def testDefaultFEN(self):
 		game = Game()
 		self.assertEquals(game.fen(), 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
