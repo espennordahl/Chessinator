@@ -84,6 +84,12 @@ class Bishop(Piece):
 			return "b"
 		else:
 			return "B"
+	
+	def canMove(self, fromCoord, toCoord):
+		xDist = abs(fromCoord.index[0] - toCoord.index[0])
+		yDist = abs(fromCoord.index[1] - toCoord.index[1])
+
+		return xDist == yDist
 
 class Rook(Piece):
 	def type(self):

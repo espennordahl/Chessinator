@@ -55,8 +55,14 @@ class Move():
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 	
 	def _conformBishopMove(self, board):
-		return
-		
+		bishopSquares = board.getSquares(piecetype = Type.bishop, color = self._color)
+		for square in bishopSquares:
+			if square.piece.canMove(square.coord, self._toCoord):
+				self._fromCoord = square.coord
+				
+		if self._fromCoord == None:
+			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
+	
 	def isLegal(self):
 		if not self._checkPGN():
 			return False
