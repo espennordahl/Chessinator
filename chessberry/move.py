@@ -32,6 +32,8 @@ class Move():
 					self._conformKnightMove(board)
 				elif self._pgn[0] == "B":
 					self._conformBishopMove(board)
+				elif self._pgn[0] == "Q":
+					self._conformQueenMove(board)
 				else:
 					raise Exception("Unsupported piece type in pgn: " + self._pgn)
 		else:
@@ -70,7 +72,17 @@ class Move():
 				
 		if self._fromCoord == None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
+
+	def _conformQueenMove(self, board):
+		queenSquares = board.getSquares(piecetype = Type.queen, color = self._color)
+		for square in queenSquares:
+			if square.piece.canMove(square.coord, self._toCoord):
+				self._fromCoord = square.coord
+				
+		if self._fromCoord == None:
+			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 	
+
 	def _conformCastlesMove(self, board):
 		if self._pgn[0] == "o":
 			self._castleSide = CastleSide.queenside

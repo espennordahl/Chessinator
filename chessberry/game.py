@@ -44,14 +44,14 @@ class Game():
 
 			## move rook
 			fromSquare = self._board.getSquare(rookCoord)
-			toSquareLetter = 5 if self._sideToMove == Color.white else 3
+			toSquareLetter = 3 if move.castleSide == CastleSide.queenside else 5
 			toSquare = self._board.getSquare(Coordinate(index=[toSquareLetter, castleRank]))
 			fromSquare.piece = None
 			toSquare.piece = rook
 
 			## move king
 			fromSquare = self._board.getSquare(Coordinate(index=[4, castleRank]))
-			toSquareLetter = 6 if self._sideToMove == Color.white else 2
+			toSquareLetter = 2 if move.castleSide == CastleSide.queenside else 6
 			toSquare = self._board.getSquare(Coordinate(index=[toSquareLetter, castleRank]))
 			pieceToMove = fromSquare.piece
 			fromSquare.piece = None
@@ -79,16 +79,13 @@ class Game():
 
 		## An passant target square is specified after a double push, 
 		## regardless of whether an en passant capture is really possible
+		self._enPassantTargetSquare = "-"
 		if pieceToMove.type() == Type.pawn:
 			if move.getFromCoord().distanceTo(move.getToCoord())[1] == 2:
 				enPassantTargetRankStr = "3"
 				if pieceToMove.color() == Color.black:
 					enPassantTargetRankStr = "6"
 				self._enPassantTargetSquare = fromSquare.coord.pgn[0] + enPassantTargetRankStr
-			else:
-				self._enPassantTargetSquare = "-"
-		else:
-			self._enPassantTargetSquare = "-"
 
 		## The halfmove clock is reset after a pawn move or capture, and incremented otherwise
 		if pieceToMove.type() == Type.pawn:
@@ -102,6 +99,9 @@ class Game():
 		else:
 			self._sideToMove = Color.black
 		
+		if self._castlingAbility == "":
+			self._castlingAbility = "-"
+
 		return True
 
 	def applyfen(self, fenstring):

@@ -111,6 +111,15 @@ class Queen(Piece):
 		else:
 			return "Q"
 
+	def canMove(self, fromCoord, toCoord):
+		xDist = abs(fromCoord.index[0] - toCoord.index[0])
+		yDist = abs(fromCoord.index[1] - toCoord.index[1])
+		
+		if xDist == yDist or xDist == 0 or yDist == 0:
+			return True
+		else:
+			return False
+
 class King(Piece):
 	def type(self):
 		return Type.king
