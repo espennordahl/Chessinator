@@ -49,6 +49,8 @@ class TestMoveLogic(unittest.TestCase):
 		self.assertTrue(newMove.isLegal())
 		self.assertTrue(self.game.isMoveLegal(newMove))
 		self.assertTrue(self.game.applyMove(newMove))
+		self.assertEquals(newMove.getToCoord().pgn, 'd4')
+		self.assertEquals(newMove.getFromCoord().pgn, 'd2')
 	
 	def testWhiteMoveOutsideOfBoard(self):
 		newMove = Move(Color.white, 'm4')
@@ -56,11 +58,7 @@ class TestMoveLogic(unittest.TestCase):
 		self.assertFalse(self.game.isMoveLegal(newMove))
 		self.assertFalse(self.game.applyMove(newMove))
 	
-	def testPawnMoves(self):
-		legalMove = Move(Color.white, 'a4')
-		self.assertTrue(self.game.isMoveLegal(legalMove))	
-
-class TestGameState():#unittest.TestCase):
+class TestGameState(unittest.TestCase):
 	def testDefaultFEN(self):
 		game = Game()
 		self.assertEquals(game.fen(), 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')

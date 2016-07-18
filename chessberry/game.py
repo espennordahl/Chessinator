@@ -42,7 +42,7 @@ class Game():
 				enPassantTargetRankStr = "3"
 				if pieceToMove.color() == Color.black:
 					enPassantTargetRankStr = "6"
-				self._enPassantTargetSquare = indexToLetter(move.fromLetter()) + enPassantTargetRankStr
+				self._enPassantTargetSquare = fromSquare.coord.pgn[0] + enPassantTargetRankStr
 			else:
 				self._enPassantTargetSquare = "-"
 		else:
@@ -70,15 +70,15 @@ class Game():
 		fenranks = fenarray[0].split('/')
 		rankindex = 7
 		for rank in fenranks:
-			fileindex = 0
+			letterindex = 0
 			for letter in rank:
 				if isInt(letter):
-					fileindex += int(letter)
+					letterindex += int(letter)
 				else:
-					coord = Coordinate(index=[rankindex, fileindex])
+					coord = Coordinate(index=[letterindex, rankindex])
 					square = self._board.getSquare(coord)
 					square.piece = makePiece(letter)
-					fileindex += 1
+					letterindex += 1
 			rankindex -= 1
 
 		# Side to move
@@ -109,7 +109,9 @@ class Game():
 		## and moving down the board. Each rank is seperated by a '/'
 		## Within each rank, pieces go in order from A to H
 		placement = ""
-		for rank in self._board.getRanks():
+		ranks = copy.copy(self._board.getRanks())
+		ranks.reverse()
+		for rank in ranks:
 			noPieceCounter = 0
 			for square in rank:
 				if square.hasPiece():
@@ -124,7 +126,7 @@ class Game():
 			if noPieceCounter:
 				placement = placement + str(noPieceCounter)
 	
-			if rank > 0:
+			if rank != ranks[-1]:
 				placement = placement + "/"
 
 		fen.append(placement)

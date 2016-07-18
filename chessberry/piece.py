@@ -48,7 +48,7 @@ class Pawn(Piece):
 		return Type.pawn
 
 	def fen(self):
-		if color == Color.black:
+		if self.color() == Color.black:
 			return "p"
 		else:
 			return "P"
@@ -58,13 +58,13 @@ class Knight(Piece):
 		return Type.knight
 
 	def fen(self):
-		if color == Color.black:
+		if self.color() == Color.black:
 			return "n"
 		else:
 			return "N"
 
 	def canMove(self, fromCoord, toCoord):
-		xDist = abs(fromCoord.index[0] - toCoord.index[1])
+		xDist = abs(fromCoord.index[0] - toCoord.index[0])
 		yDist = abs(fromCoord.index[1] - toCoord.index[1])
 
 		if xDist == 1 and yDist == 2:
@@ -80,7 +80,7 @@ class Bishop(Piece):
 		return Type.bishop
 
 	def fen(self):
-		if color == Color.black:
+		if self.color() == Color.black:
 			return "b"
 		else:
 			return "B"
@@ -90,7 +90,7 @@ class Rook(Piece):
 		return Type.rook
 
 	def fen(self):
-		if color == Color.black:
+		if self.color() == Color.black:
 			return "r"
 		else:
 			return "R"
@@ -100,7 +100,7 @@ class Queen(Piece):
 		return Type.queen
 
 	def fen(self):
-		if color == Color.black:
+		if self.color() == Color.black:
 			return "q"
 		else:
 			return "Q"
@@ -110,7 +110,7 @@ class King(Piece):
 		return Type.king
 
 	def fen(self):
-		if color == Color.black:
+		if self.color() == Color.black:
 			return "k"
 		else:
 			return "K"

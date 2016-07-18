@@ -19,7 +19,7 @@ class Move():
 			## normal piece move
 			toRank = int(self._pgn[2]) - 1
 			toLetter = letterToIndex(self._pgn[1])
-			self._toCoord = Coordainte(index=[toRank, toLetter])
+			self._toCoord = Coordinate(index=[toLetter, toRank])
 			if self._pgn[0] == "N":
 				self._conformKnightMove(board)
 			elif self._pgn[0] == "B":
@@ -42,17 +42,17 @@ class Move():
 			else:
 				fromRank = toRank + 1
 		fromLetter = toLetter
-		self._toCoord = Coordinate(index = [toRank, toLetter])
-		self._fromCoord = Coordinate(index = [fromRank, fromLetter])
+		self._toCoord = Coordinate(index = [toLetter, toRank])
+		self._fromCoord = Coordinate(index = [fromLetter, fromRank])
 		
 	def _conformKnightMove(self, board):
-		knightSquares = board.getSquares(type = Type.knight, color = self._color)
+		knightSquares = board.getSquares(piecetype = Type.knight, color = self._color)
 		for square in knightSquares:
 			if square.piece.canMove(square.coord, self._toCoord):
-				self._fromCoord = square.coordinate
+				self._fromCoord = square.coord
 
 		if  self._fromCoord == None:
-			raise Exception("Couldnt find candidate piece for move.")
+			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 	
 	def _conformBishopMove(self, board):
 		return
@@ -84,10 +84,10 @@ class Move():
 			return False
 
 		if len(self._pgn) == 2:
-			if self._pgn[0] not in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'):
+			if self._pgn[0] not in ('abcdefgh'):
 				return False
 
-			if self._pgn[1] not in ('1', '2', '3', '4', '5', '6', '7', '8'):
+			if self._pgn[1] not in ('12345678'):
 				return False
 		
 		return True

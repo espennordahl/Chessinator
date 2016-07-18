@@ -73,29 +73,47 @@ class Square():
 
 class Board:
 	def __init__(self):
-		self._squares = []
-		for x in range(0,8):
-			self._squares.append([])
-			for y in range(0,8):
+		self._ranks = []
+		for y in range(0,8):
+			self._ranks.append([])
+			for x in range(0,8):
 				coord = Coordinate(index=[x,y])
-				self._squares[x].append(Square(coord))
+				self._ranks[y].append(Square(coord))
 	
 	def getSquare(self, coordinate):
-		return self._squares[coordinate.index[0]][coordinate.index[1]]
+		return self._ranks[coordinate.index[1]][coordinate.index[0]]
 	
 	def getRanks(self):
-		return self._squares
+		return self._ranks
 	
-	def getSquares(self, type = None, color = None):
+	def getSquares(self, piecetype = None, color = None):
 		matchingSquares = []
-		for rank in self._squares:
+		for rank in self._ranks:
 			for square in rank:
-				if not square.piece:
+				if square.piece == None:
 					continue
-				if type:
-					if square.piece.type != type:
+				if piecetype:
+					if square.piece.type() != piecetype:
 						continue
 				if color:
-					if square.piece.color != color:
+					if square.piece.color() != color:
 						continue
-				matchingPieces.append(square)
+				matchingSquares.append(square)
+		return matchingSquares
+
+	def ascii(self):
+		string = '   a b c d e f g h\n'
+		rankindex = 8
+		rankscopy = copy.copy(self._ranks)
+		rankscopy.reverse()
+		for rank in rankscopy:
+			string = string + str(rankindex) + ' '
+			rankindex -= 1
+			for square in rank:
+				string = string + ' '
+				if square.piece:
+					string = string + square.piece.fen()
+				else:
+					string = string + ' '
+			string = string + '\n'
+		return string
