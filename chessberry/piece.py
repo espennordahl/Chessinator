@@ -135,11 +135,6 @@ class Rook(Piece):
 			return True
 
 		if yDist == 0:
-			print "fromCoord: " + str(fromCoord.index)
-			print "toCoord: " + str(toCoord.index)
-			print "obstacles: "
-			for rank in obstacles:
-				print str(rank)
 			for letter in range(min(fromCoord.index[0], toCoord.index[0]) +1 , 
 								max(toCoord.index[0], fromCoord.index[0])):
 				if obstacles[fromCoord.index[1]][letter]:
@@ -176,3 +171,8 @@ class King(Piece):
 		else:
 			return "K"
 
+	def canMove(self, fromCoord, toCoord, obstacles, takes=False):
+		xDist = abs(fromCoord.index[0] - toCoord.index[0])
+		yDist = abs(fromCoord.index[1] - toCoord.index[1])
+		
+		return xDist == 1 or yDist == 1	

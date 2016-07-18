@@ -50,6 +50,8 @@ class Move():
 					self._conformBishopMove(board)
 				elif self._pgn[0] == "R":
 					self._conformRookMove(board)
+				elif self._pgn[0] == "K":
+					self._conformKingMove(board)
 				elif self._pgn[0] == "Q":
 					self._conformQueenMove(board)
 				else:
@@ -91,6 +93,17 @@ class Move():
 				
 		if self._fromCoord == None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
+
+	def _conformKingMove(self, board):
+		kingSquares = board.getSquares(piecetype = Type.king, color = self._color, candidatePGN = self._candidatePGN)
+		for square in kingSquares:
+			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
+				self._fromCoord = square.coord
+				
+		if self._fromCoord == None:
+			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
+
+
 
 	def _conformRookMove(self, board):
 		rookSquares = board.getSquares(piecetype = Type.rook, color = self._color, candidatePGN = self._candidatePGN)
