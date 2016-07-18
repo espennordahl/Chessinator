@@ -86,7 +86,7 @@ class Board:
 	def getRanks(self):
 		return self._ranks
 	
-	def getSquares(self, piecetype = None, color = None):
+	def getSquares(self, piecetype = None, color = None, candidatePGN = None):
 		matchingSquares = []
 		for rank in self._ranks:
 			for square in rank:
@@ -97,6 +97,9 @@ class Board:
 						continue
 				if color:
 					if square.piece.color() != color:
+						continue
+				if candidatePGN:
+					if candidatePGN not in square.coord.pgn:
 						continue
 				matchingSquares.append(square)
 		return matchingSquares

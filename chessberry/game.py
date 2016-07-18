@@ -28,6 +28,8 @@ class Game():
 
 		move.conformMove(self._board)
 
+		capture = False
+
 		if move.castleSide():
 			## find rook
 			rookSquares = self._board.getSquares(piecetype=Type.rook, color=self._sideToMove)
@@ -72,6 +74,8 @@ class Game():
 			fromSquare.piece = None
 
 			toSquare = self._board.getSquare(move.getToCoord())
+			if toSquare.piece != None:
+				capture = True
 			toSquare.piece = pieceToMove
 
 			## update castling ability
@@ -88,7 +92,7 @@ class Game():
 				self._enPassantTargetSquare = fromSquare.coord.pgn[0] + enPassantTargetRankStr
 
 		## The halfmove clock is reset after a pawn move or capture, and incremented otherwise
-		if pieceToMove.type() == Type.pawn:
+		if pieceToMove.type() == Type.pawn or capture == True:
 			self._halfMoveClock = 0
 		else:
 			self._halfMoveClock += 1

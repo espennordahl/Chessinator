@@ -39,7 +39,7 @@ class Piece():
 	def color(self):
 		return self._color
 
-	def canMove(self, fromCoord, toCoord):
+	def canMove(self, fromCoord, toCoord, takes=False):
 		raise Exception("Called abstract class method.")
 		return False
 
@@ -52,6 +52,28 @@ class Pawn(Piece):
 			return "p"
 		else:
 			return "P"
+	
+	def canMove(self, fromCoord, toCoord, takes=False):
+		xDist = abs(fromCoord.index[0] - toCoord.index[0])
+		yDiff = fromCoord.index[1] - toCoord.index[1]
+		
+		if self.color() == Color.white:
+			yDiff *= -1
+		
+		if not takes:
+			if yDiff == 1 and xDist == 0:
+				return True
+
+			if yDiff == 2 and xDist == 0:
+				if self.color() == Color.white:
+					if fromCoord.index[1] == 1:
+						return True
+				else:
+					if fromCoord.index[1] == 6:
+						return True
+		else:
+			return yDiff == 1 and xDist == 1
+
 
 class Knight(Piece):
 	def type(self):
@@ -63,7 +85,7 @@ class Knight(Piece):
 		else:
 			return "N"
 
-	def canMove(self, fromCoord, toCoord):
+	def canMove(self, fromCoord, toCoord, takes=False):
 		xDist = abs(fromCoord.index[0] - toCoord.index[0])
 		yDist = abs(fromCoord.index[1] - toCoord.index[1])
 
@@ -85,7 +107,7 @@ class Bishop(Piece):
 		else:
 			return "B"
 	
-	def canMove(self, fromCoord, toCoord):
+	def canMove(self, fromCoord, toCoord, takes=False):
 		xDist = abs(fromCoord.index[0] - toCoord.index[0])
 		yDist = abs(fromCoord.index[1] - toCoord.index[1])
 
@@ -111,7 +133,7 @@ class Queen(Piece):
 		else:
 			return "Q"
 
-	def canMove(self, fromCoord, toCoord):
+	def canMove(self, fromCoord, toCoord, takes=False):
 		xDist = abs(fromCoord.index[0] - toCoord.index[0])
 		yDist = abs(fromCoord.index[1] - toCoord.index[1])
 		
