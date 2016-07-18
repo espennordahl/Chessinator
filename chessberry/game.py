@@ -28,12 +28,54 @@ class Game():
 
 		move.conformMove(self._board)
 
-		fromSquare = self._board.getSquare(move.getFromCoord())
-		pieceToMove = fromSquare.piece
-		fromSquare.piece = None
+		if move.castleSide():
+			## find rook
+			rookSquares = self._board.getSquares(piecetype=Type.rook, color=self._sideToMove)
+			castleRank = 0 if self._sideToMove == Color.white else 7
+			rookLetter = 0 if move.castleSide == CastleSide.queenside else 7	
+			rookCoord = Coordinate(index=[rookLetter, castleRank])
+			rook = None
+			for square in rookSquares:
+				if square.coord.pgn == rookCoord.pgn:
+					rook = square.piece
+					
+			if not rook:
+				raise Exception("Couldn't find matching rook in coord " + str(rookCoord.pgn) + " for castles move.\n" + self._board.ascii())
 
-		toSquare = self._board.getSquare(move.getToCoord())
-		toSquare.piece = pieceToMove
+			## move rook
+			fromSquare = self._board.getSquare(rookCoord)
+			toSquareLetter = 5 if self._sideToMove == Color.white else 3
+			toSquare = self._board.getSquare(Coordinate(index=[toSquareLetter, castleRank]))
+			fromSquare.piece = None
+			toSquare.piece = rook
+
+			## move king
+			fromSquare = self._board.getSquare(Coordinate(index=[4, castleRank]))
+			toSquareLetter = 6 if self._sideToMove == Color.white else 2
+			toSquare = self._board.getSquare(Coordinate(index=[toSquareLetter, castleRank]))
+			pieceToMove = fromSquare.piece
+			fromSquare.piece = None
+			toSquare.piece = pieceToMove
+			
+			## update castlingAbility
+			if self._sideToMove == Color.white:
+				self._castlingAbility = self._castlingAbility.replace("K", "")
+				self._castlingAbility = self._castlingAbility.replace("Q", "")
+
+			else:
+				self._castlingAbility = self._castlingAbility.replace("k", "")
+				self._castlingAbility = self._castlingAbility.replace("q", "")
+		else:
+			## regular piece move
+			fromSquare = self._board.getSquare(move.getFromCoord())
+			pieceToMove = fromSquare.piece
+			fromSquare.piece = None
+
+			toSquare = self._board.getSquare(move.getToCoord())
+			toSquare.piece = pieceToMove
+
+			## update castling ability
+			
 
 		## An passant target square is specified after a double push, 
 		## regardless of whether an en passant capture is really possible
@@ -59,8 +101,7 @@ class Game():
 			self._sideToMove = Color.white
 		else:
 			self._sideToMove = Color.black
-			
-
+		
 		return True
 
 	def applyfen(self, fenstring):

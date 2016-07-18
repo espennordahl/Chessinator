@@ -1,8 +1,12 @@
-
+from enum import Enum
 
 from utils import *
 from piece import *
 from board import *
+
+class CastleSide(Enum):
+	kingside = 1
+	queenside = 2
 
 class Move():
 	def __init__(self, color, pgnMove):
@@ -10,22 +14,26 @@ class Move():
 		self._color = color
 		self._fromCoord = None
 		self._toCoord = None
+		self._castleSide = None
 
 	def conformMove(self, board):
 		if len(self._pgn) == 2:
 			## pawn move
 			self._conformPawnMove(board)
 		elif len(self._pgn) == 3:
-			## normal piece move
-			toRank = int(self._pgn[2]) - 1
-			toLetter = letterToIndex(self._pgn[1])
-			self._toCoord = Coordinate(index=[toLetter, toRank])
-			if self._pgn[0] == "N":
-				self._conformKnightMove(board)
-			elif self._pgn[0] == "B":
-				self._conformBishopMove(board)
+			if self._pgn == 'O-O':
+				self._conformCastlesMove(board)
 			else:
-				raise Exception("Unsupported piece type in pgn: " + self._pgn)
+				## normal piece move
+				toRank = int(self._pgn[2]) - 1
+				toLetter = letterToIndex(self._pgn[1])
+				self._toCoord = Coordinate(index=[toLetter, toRank])
+				if self._pgn[0] == "N":
+					self._conformKnightMove(board)
+				elif self._pgn[0] == "B":
+					self._conformBishopMove(board)
+				else:
+					raise Exception("Unsupported piece type in pgn: " + self._pgn)
 		else:
 			raise Exception("Unsupported pgn length: " + self._pgn) 
 
@@ -63,6 +71,12 @@ class Move():
 		if self._fromCoord == None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 	
+	def _conformCastlesMove(self, board):
+		if self._pgn[0] == "o":
+			self._castleSide = CastleSide.queenside
+		else:
+			self._castleSide = CastleSide.kingside
+	
 	def isLegal(self):
 		if not self._checkPGN():
 			return False
@@ -81,6 +95,9 @@ class Move():
 		if self._fromCoord == None:
 			raise Exception ("move not conformed yet. PGN: " + self._pgn)
 		return self._fromCoord
+	
+	def castleSide(self):
+		return self._castleSide
 
 	def _checkPGN(self):
 		if not isinstance(self._pgn, basestring):
