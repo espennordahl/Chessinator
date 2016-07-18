@@ -2,68 +2,59 @@
 
 from utils import *
 from piece import *
+from board import *
 
 class Move():
 	def __init__(self, color, pgnMove):
 		self._pgn = pgnMove
 		self._color = color
-		self._toRank = None
-		self._fromRank = None
-		self._toLetter = None
-		self._fromLetter = None
+		self._fromCoord = None
+		self._toCoord = None
 
 	def conformMove(self, board):
 		if len(self._pgn) == 2:
+			## pawn move
 			self._conformPawnMove(board)
 		elif len(self._pgn) == 3:
 			## normal piece move
-			self._toRank = int(self._pgn[2]) - 1
-			self._toLetter = letterToIndex(self._pgn[1])
+			toRank = int(self._pgn[2]) - 1
+			toLetter = letterToIndex(self._pgn[1])
+			self._toCoord = Coordainte(index=[toRank, toLetter])
 			if self._pgn[0] == "N":
 				self._conformKnightMove(board)
 			elif self._pgn[0] == "B":
 				self._conformBishopMove(board)
+			else:
+				raise Exception("Unsupported piece type in pgn: " + self._pgn)
 		else:
 			raise Exception("Unsupported pgn length: " + self._pgn) 
 
-
 	def _conformPawnMove(self, board):
-		self._toRank = int(self._pgn[1]) - 1
-		self._toLetter = letterToIndex(self._pgn[0])
-		if self._toRank == 3:
-			self._fromRank = 1
-		elif self._toRank == 4:
-			self._fromRank = 6
+		toRank = int(self._pgn[1]) - 1
+		toLetter = letterToIndex(self._pgn[0])
+		if toRank == 3:
+			fromRank = 1
+		elif toRank == 4:
+			fromRank = 6
 		else:
 			if self._color == Color.white:
-				self._fromRank = self._toRank - 1
+				fromRank = toRank - 1
 			else:
-				self._fromRank = self._toRank + 1
-		self._fromLetter = self._toLetter
+				fromRank = toRank + 1
+		fromLetter = toLetter
+		self._toCoord = Coordinate(index = [toRank, toLetter])
+		self._fromCoord = Coordinate(index = [fromRank, fromLetter])
 		
 	def _conformKnightMove(self, board):
-		shortestDistance = 99
-		candidateIndices = None
-		rankIndex = 0
-		for rank in board:
-			letterIndex = 0
-			for square in rank:
-				if square != None and square.color() == self._color and square.type() == Type.knight:
-					##TODO: naive distance metric. Should be improved
-					distance = abs(rankIndex - self._toRank) + abs(letterIndex - self._toLetter)
-					if distance < shortestDistance:
-						candidateIndices = (rankIndex, letterIndex)
-				letterIndex += 1
-			rankIndex += 1
+		knightSquares = board.getSquares(type = Type.knight, color = self._color)
+		for square in knightSquares:
+			if square.piece.canMove(square.coord, self._toCoord):
+				self._fromCoord = square.coordinate
 
-		if candidateIndices == None:
+		if  self._fromCoord == None:
 			raise Exception("Couldnt find candidate piece for move.")
-		else:
-			self._fromRank = candidateIndices[0]
-			self._fromLetter = candidateIndices[1]
 	
 	def _conformBishopMove(self, board):
-		## search along diagonal
 		return
 		
 	def isLegal(self):
@@ -75,25 +66,15 @@ class Move():
 		
 		return True
 
-	def toRank(self):
-		if self._toRank == None:
+	def getToCoord(self):
+		if self._toCoord == None:
 			raise Exception ("move not conformed yet. PGN: " + self._pgn)
-		return self._toRank
+		return self._toCoord
 
-	def fromRank(self):
-		if self._fromRank == None:
+	def getFromCoord(self):
+		if self._fromCoord == None:
 			raise Exception ("move not conformed yet. PGN: " + self._pgn)
-		return self._fromRank
-
-	def toLetter(self):
-		if self._toLetter == None:
-			raise Exception ("move not conformed yet. PGN: " + self._pgn)
-		return self._toLetter
-
-	def fromLetter(self):
-		if self._toLetter == None:
-			raise Exception ("move not conformed yet. PGN: " + self._pgn)
-		return self._fromLetter
+		return self._fromCoord
 
 	def _checkPGN(self):
 		if not isinstance(self._pgn, basestring):

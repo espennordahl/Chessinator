@@ -3,15 +3,12 @@
 from utils import *
 from piece import *
 from move import *
+from board import *
 
 class Game():
 	def __init__(self):
 		## init board
-		self._board = []
-		for i in range(0,8):
-			self._board.append([])
-			for j in range(0,8):
-				self._board[i].append(None)
+		self._board = Board()
 
 		## init game state
 		self._sideToMove = Color.white
@@ -20,7 +17,6 @@ class Game():
 		self._halfMoveClock = 0
 		self._fullMoveCounter = 0
 
-		## apply fen
 		self.applyfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
 	def isMoveLegal(self, move):
@@ -32,15 +28,17 @@ class Game():
 
 		move.conformMove(self._board)
 
-		pieceToMove = self._board[move.fromRank()][move.fromLetter()] 
-		self._board[move.fromRank()][move.fromLetter()] = None
+		fromSquare = self._board.getSquare(move.getFromCoord())
+		pieceToMove = fromSquare.piece
+		fromSquare.piece = None
 
-		self._board[move.toRank()][move.toLetter()] = pieceToMove
+		toSquare = self._board.getSquare(move.getToCoord())
+		toSquare.piece = pieceToMove
 
 		## An passant target square is specified after a double push, 
 		## regardless of whether an en passant capture is really possible
 		if pieceToMove.type() == Type.pawn:
-			if abs(move.fromRank() - move.toRank()) == 2:
+			if move.getFromCoord().distanceTo(move.getToCoord())[1] == 2:
 				enPassantTargetRankStr = "3"
 				if pieceToMove.color() == Color.black:
 					enPassantTargetRankStr = "6"
@@ -68,17 +66,19 @@ class Game():
 	def applyfen(self, fenstring):
 		fenarray = fenstring.split(' ')
 		
-		# Piece placement
+		# Piece placement. FEN placement starts at the 8th rank
 		fenranks = fenarray[0].split('/')
 		rankindex = 7
 		for rank in fenranks:
-			file = 0
+			fileindex = 0
 			for letter in rank:
 				if isInt(letter):
-					file += int(letter)
+					fileindex += int(letter)
 				else:
-					self._board[rankindex][file] = Piece(fenstring=letter)
-					file += 1
+					coord = Coordinate(index=[rankindex, fileindex])
+					square = self._board.getSquare(coord)
+					square.piece = makePiece(letter)
+					fileindex += 1
 			rankindex -= 1
 
 		# Side to move
@@ -109,14 +109,14 @@ class Game():
 		## and moving down the board. Each rank is seperated by a '/'
 		## Within each rank, pieces go in order from A to H
 		placement = ""
-		for rank in range(7,-1,-1):
+		for rank in self._board.getRanks():
 			noPieceCounter = 0
-			for square in self._board[rank]:
-				if square != None:
+			for square in rank:
+				if square.hasPiece():
 					if noPieceCounter:
 						placement = placement + str(noPieceCounter)
 						noPieceCounter = 0
-					placement = placement + square.fen()
+					placement = placement + square.piece.fen()
 
 				else: ## no piece
 					noPieceCounter += 1

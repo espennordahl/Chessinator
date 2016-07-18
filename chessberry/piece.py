@@ -10,51 +10,108 @@ class Type(Enum):
 	queen = 4
 	king = 5
 
+def makePiece(fenstring):
+	color = Color.white
+	if fenstring.islower():
+		color = Color.black
+	lowerFenstring = fenstring.lower()
+	if lowerFenstring == "p":
+		return Pawn(color)
+	elif lowerFenstring == "n":
+		return Knight(color)
+	elif lowerFenstring == "b":
+		return Bishop(color)
+	elif lowerFenstring == "r":
+		return Rook(color)
+	elif lowerFenstring == "q":
+		return Queen(color)
+	elif lowerFenstring == "k":
+		return King(color)
+
 class Piece():
-	def __init__(self, fenstring = ""):
-		if fenstring:
-			if fenstring.islower():
-				self._color = Color.black
-			else:
-				self._color = Color.white
-			lowerFenstring = fenstring.lower()
-			if lowerFenstring == "p":
-				self._type = Type.pawn
-			elif lowerFenstring == "n":
-				self._type = Type.knight
-			elif lowerFenstring == "b":
-				self._type = Type.bishop
-			elif lowerFenstring == "r":
-				self._type = Type.rook
-			elif lowerFenstring == "q":
-				self._type = Type.queen
-			elif lowerFenstring == "k":
-				self._type = Type.king
-
-	def fen(self):
-		fenstring = ""
-		if self._type == Type.pawn:
-			fenstring = "p"
-		elif self._type == Type.knight:
-			fenstring = "n"
-		elif self._type == Type.bishop:
-			fenstring = "b"
-		elif self._type == Type.rook:
-			fenstring = "r"
-		elif self._type == Type.queen:
-			fenstring = "q"
-		elif self._type == Type.king:
-			fenstring = "k"
-
-		if self._color == Color.black:
-			return fenstring
-		else:
-			return fenstring.upper()
-
+	def __init__(self, color):
+		self._color = color
+	
 	def type(self):
-		return self._type
+		raise Exception("Called abstract class method.")
+		return None
 	
 	def color(self):
 		return self._color
 
+	def canMove(self, fromCoord, toCoord):
+		raise Exception("Called abstract class method.")
+		return False
+
+class Pawn(Piece):
+	def type(self):
+		return Type.pawn
+
+	def fen(self):
+		if color == Color.black:
+			return "p"
+		else:
+			return "P"
+
+class Knight(Piece):
+	def type(self):
+		return Type.knight
+
+	def fen(self):
+		if color == Color.black:
+			return "n"
+		else:
+			return "N"
+
+	def canMove(self, fromCoord, toCoord):
+		xDist = abs(fromCoord.index[0] - toCoord.index[1])
+		yDist = abs(fromCoord.index[1] - toCoord.index[1])
+
+		if xDist == 1 and yDist == 2:
+			return True
+
+		if xDist == 2 and yDist == 1:
+			return True
+
+		return False
+
+class Bishop(Piece):
+	def type(self):
+		return Type.bishop
+
+	def fen(self):
+		if color == Color.black:
+			return "b"
+		else:
+			return "B"
+
+class Rook(Piece):
+	def type(self):
+		return Type.rook
+
+	def fen(self):
+		if color == Color.black:
+			return "r"
+		else:
+			return "R"
+
+class Queen(Piece):
+	def type(self):
+		return Type.queen
+
+	def fen(self):
+		if color == Color.black:
+			return "q"
+		else:
+			return "Q"
+
+class King(Piece):
+	def type(self):
+		return Type.king
+
+	def fen(self):
+		if color == Color.black:
+			return "k"
+		else:
+			return "K"
 

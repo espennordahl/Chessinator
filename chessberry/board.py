@@ -10,6 +10,9 @@ class Coordinate:
 			self._conformPGN(pgn)
 		else:
 			self._conformIndex(index)
+	
+	def distanceTo(self, otherCoord):
+		return (abs(self.index[0] - otherCoord.index[0]), abs(self.index[1] - otherCoord.index[1]))
 
 	def _conformPGN(self, pgn):
 		self._checkPGN(pgn)
@@ -57,6 +60,42 @@ class Coordinate:
 		if rank > 7 or rank < 0:
 			raise Exception("Invalid index for rank: " + str(rank) + ". Should be in 0-7 range.")
 
+class Square():
+	def __init__(self, coordinate, piece=None):
+		self.coord = coordinate
+		self.piece = piece
+	
+	def hasPiece(self):
+		return not self.empty()
+	
+	def empty(self):
+		return self.piece == None
+
 class Board:
 	def __init__(self):
 		self._squares = []
+		for x in range(0,8):
+			self._squares.append([])
+			for y in range(0,8):
+				coord = Coordinate(index=[x,y])
+				self._squares[x].append(Square(coord))
+	
+	def getSquare(self, coordinate):
+		return self._squares[coordinate.index[0]][coordinate.index[1]]
+	
+	def getRanks(self):
+		return self._squares
+	
+	def getSquares(self, type = None, color = None):
+		matchingSquares = []
+		for rank in self._squares:
+			for square in rank:
+				if not square.piece:
+					continue
+				if type:
+					if square.piece.type != type:
+						continue
+				if color:
+					if square.piece.color != color:
+						continue
+				matchingPieces.append(square)
