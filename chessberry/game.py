@@ -78,9 +78,6 @@ class Game():
 				capture = True
 			toSquare.piece = pieceToMove
 
-			## update castling ability
-			
-
 		## An passant target square is specified after a double push, 
 		## regardless of whether an en passant capture is really possible
 		self._enPassantTargetSquare = "-"
@@ -105,7 +102,7 @@ class Game():
 		
 		if self._castlingAbility == "":
 			self._castlingAbility = "-"
-
+	
 		return True
 
 	def applyfen(self, fenstring):

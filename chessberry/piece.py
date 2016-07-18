@@ -39,7 +39,7 @@ class Piece():
 	def color(self):
 		return self._color
 
-	def canMove(self, fromCoord, toCoord, takes=False):
+	def canMove(self, fromCoord, toCoord, obstacles, takes=False):
 		raise Exception("Called abstract class method.")
 		return False
 
@@ -53,7 +53,7 @@ class Pawn(Piece):
 		else:
 			return "P"
 	
-	def canMove(self, fromCoord, toCoord, takes=False):
+	def canMove(self, fromCoord, toCoord, obstacles, takes=False):
 		xDist = abs(fromCoord.index[0] - toCoord.index[0])
 		yDiff = fromCoord.index[1] - toCoord.index[1]
 		
@@ -85,7 +85,7 @@ class Knight(Piece):
 		else:
 			return "N"
 
-	def canMove(self, fromCoord, toCoord, takes=False):
+	def canMove(self, fromCoord, toCoord, obstacles, takes=False):
 		xDist = abs(fromCoord.index[0] - toCoord.index[0])
 		yDist = abs(fromCoord.index[1] - toCoord.index[1])
 
@@ -107,7 +107,7 @@ class Bishop(Piece):
 		else:
 			return "B"
 	
-	def canMove(self, fromCoord, toCoord, takes=False):
+	def canMove(self, fromCoord, toCoord, obstacles, takes=False):
 		xDist = abs(fromCoord.index[0] - toCoord.index[0])
 		yDist = abs(fromCoord.index[1] - toCoord.index[1])
 
@@ -122,6 +122,30 @@ class Rook(Piece):
 			return "r"
 		else:
 			return "R"
+		
+	def canMove(self, fromCoord, toCoord, obstacles, takes=False):
+		xDist = abs(fromCoord.index[0] - toCoord.index[0])
+		yDist = abs(fromCoord.index[1] - toCoord.index[1])
+		
+		if xDist == 0:
+			for rank in range(	min(fromCoord.index[1], toCoord.index[1]) +1 , 
+								max(toCoord.index[1], fromCoord.index[1])):
+				if obstacles[rank][fromCoord.index[0]]:
+					return False
+			return True
+
+		if yDist == 0:
+			print "fromCoord: " + str(fromCoord.index)
+			print "toCoord: " + str(toCoord.index)
+			print "obstacles: "
+			for rank in obstacles:
+				print str(rank)
+			for letter in range(min(fromCoord.index[0], toCoord.index[0]) +1 , 
+								max(toCoord.index[0], fromCoord.index[0])):
+				if obstacles[fromCoord.index[1]][letter]:
+					return False
+			return True
+
 
 class Queen(Piece):
 	def type(self):
@@ -133,7 +157,7 @@ class Queen(Piece):
 		else:
 			return "Q"
 
-	def canMove(self, fromCoord, toCoord, takes=False):
+	def canMove(self, fromCoord, toCoord, obstacles, takes=False):
 		xDist = abs(fromCoord.index[0] - toCoord.index[0])
 		yDist = abs(fromCoord.index[1] - toCoord.index[1])
 		

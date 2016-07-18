@@ -104,6 +104,15 @@ class Board:
 				matchingSquares.append(square)
 		return matchingSquares
 
+	def obstacles(self):
+		ranks = []
+		for y in range(0,8):
+			ranks.append([])
+			for x in range(0,8):
+				coord = Coordinate(index=[x,y])
+				ranks[y].append(self.getSquare(coord).piece != None)
+		return ranks
+	
 	def ascii(self):
 		string = '   a b c d e f g h\n'
 		rankindex = 8

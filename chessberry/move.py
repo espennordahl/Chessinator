@@ -48,6 +48,8 @@ class Move():
 					self._conformKnightMove(board)
 				elif self._pgn[0] == "B":
 					self._conformBishopMove(board)
+				elif self._pgn[0] == "R":
+					self._conformRookMove(board)
 				elif self._pgn[0] == "Q":
 					self._conformQueenMove(board)
 				else:
@@ -57,7 +59,7 @@ class Move():
 		pawnSquares = board.getSquares(piecetype = Type.pawn, color = self._color, candidatePGN = self._candidatePGN)
 		takes = board.getSquare(self._toCoord).piece != None
 		for square in pawnSquares:
-			if square.piece.canMove(square.coord, self._toCoord, takes=takes):
+			if square.piece.canMove(square.coord, self._toCoord, board.obstacles(), takes=takes):
 				self._fromCoord = square.coord
 
 		if  self._fromCoord == None:
@@ -66,7 +68,7 @@ class Move():
 	def _conformKnightMove(self, board):
 		knightSquares = board.getSquares(piecetype = Type.knight, color = self._color, candidatePGN = self._candidatePGN)
 		for square in knightSquares:
-			if square.piece.canMove(square.coord, self._toCoord):
+			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
 				self._fromCoord = square.coord
 
 		if  self._fromCoord == None:
@@ -75,7 +77,7 @@ class Move():
 	def _conformBishopMove(self, board):
 		bishopSquares = board.getSquares(piecetype = Type.bishop, color = self._color, candidatePGN = self._candidatePGN)
 		for square in bishopSquares:
-			if square.piece.canMove(square.coord, self._toCoord):
+			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
 				self._fromCoord = square.coord
 				
 		if self._fromCoord == None:
@@ -84,12 +86,20 @@ class Move():
 	def _conformQueenMove(self, board):
 		queenSquares = board.getSquares(piecetype = Type.queen, color = self._color, candidatePGN = self._candidatePGN)
 		for square in queenSquares:
-			if square.piece.canMove(square.coord, self._toCoord):
+			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
 				self._fromCoord = square.coord
 				
 		if self._fromCoord == None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
-	
+
+	def _conformRookMove(self, board):
+		rookSquares = board.getSquares(piecetype = Type.rook, color = self._color, candidatePGN = self._candidatePGN)
+		for square in rookSquares:
+			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
+				self._fromCoord = square.coord
+				
+		if self._fromCoord == None:
+			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 
 	def _conformCastlesMove(self, board):
 		if self._pgn[0] == "o":
