@@ -1,4 +1,8 @@
 import unittest
+import sys
+import os
+
+from test import test_support
 
 from game import *
 from piece import *
@@ -78,8 +82,8 @@ class TestGameState(unittest.TestCase):
 	def testFullGameAnandVsCarlsenFEN(self):
 		game = Game()
 
-		fenFile = open('game01.fen')
-		pgnFile = open('game01.pgn')
+		fenFile = open(os.path.join(os.path.dirname(__file__),'game01.fen'))
+		pgnFile = open(os.path.join(os.path.dirname(__file__),'game01.pgn'))
 
 		moves = pgnGameToMoves(pgnFile.read())
 		fen = []
@@ -97,5 +101,11 @@ class TestGameState(unittest.TestCase):
 			self.assertEquals(game.fen(), fen[i], 'Failed on Move ' + str(i+1) + ". Should be: \n" + repr(fen[i]) + ". Was: \n" + repr(game.fen()) )
 			i += 1
 
+def test_main():
+	test_support.run_unittest(	TestCoordinates,
+								TestMoveLogic,
+								TestGameState
+								)
+
 if __name__ == '__main__':
-	unittest.main()
+	test_main()
