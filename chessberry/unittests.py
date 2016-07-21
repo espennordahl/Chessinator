@@ -21,18 +21,34 @@ from board import *
 ## - move legality bishop
 ## - system event loop
 
-class TestCoordinates(unittest.TestCase):
+class ChessTestCase(unittest.TestCase):
+	''' Simple TestCase subclass to customize the output.
+	'''
+	def shortDescription(self):
+		return None
+
+class TestCoordinates(ChessTestCase):
+	''' Coordinates are pretty straight forward, but we test pretty
+		thoroughly since they are such a key part of the library.'''
+	
+	def shortDescription(self):
+		return None
+
 	def testPGNassignment(self):
+		'''Tests legal assignment using pgn.'''
 		coord = Coordinate(pgn="b2")
 		self.assertEquals(coord.index, [1,1])
 		self.assertEquals(coord.pgn, "b2")
 		
 	def testIndexAssignment(self):
+		'''Tests legal assignment using indices.'''
 		coord = Coordinate(index=[2,3])
 		self.assertEquals(coord.index, [2,3])
 		self.assertEquals(coord.pgn, "c4")
 
 	def testBadIndices(self):
+		'''Relatively exhaustive test of illegal ways to create a
+			Coordinate object.'''
 		self.assertRaises(Exception, Coordinate, pgn="y31")
 		self.assertRaises(Exception, Coordinate, pgn="23")
 		self.assertRaises(Exception, Coordinate, pgn="a0")
@@ -44,8 +60,13 @@ class TestCoordinates(unittest.TestCase):
 		self.assertRaises(Exception, Coordinate, index=[2,2,3])
 		self.assertRaises(Exception, Coordinate, index=30)
 
-class TestMoveLogic(unittest.TestCase):
+class TestMoves(ChessTestCase):
+	'''Whether a move is legal or not is context sensitive, but moves
+		can be created outside of a specific game or board state, so 
+		we only fail if the move is strictly illegal in any game of chess
+		(ie outside of the board), or for a given board state.'''
 	def setUp(self):
+		'''Just to avoid creating a new game object for every test.'''
 		self.game = Game()
 
 	def testWhiteBasicMove(self):
@@ -62,7 +83,7 @@ class TestMoveLogic(unittest.TestCase):
 		self.assertFalse(self.game.isMoveLegal(newMove))
 		self.assertFalse(self.game.applyMove(newMove))
 	
-class TestGameState(unittest.TestCase):
+class TestGameState(ChessTestCase):
 	def testDefaultFEN(self):
 		game = Game()
 		self.assertEquals(game.fen(), 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
@@ -103,7 +124,7 @@ class TestGameState(unittest.TestCase):
 
 def test_main():
 	test_support.run_unittest(	TestCoordinates,
-								TestMoveLogic,
+								TestMoves,
 								TestGameState
 								)
 
