@@ -1,3 +1,4 @@
+import events
 
 class UIController():
 	def __init__(self):
@@ -8,12 +9,17 @@ class UIController():
 
 class CommandlineUI(UIController):
 	def getEvents(self, eventStack):
-		received = raw_input("UI Input: ")
-		if received != "":
-			eventStack.append(received)
+		result = raw_input("UI Input: ")
+		if result != "":
+			if result == "exit":
+				event = events.Event(events.EventType.exit)
+			else: 
+				event = events.Event(events.EventType.user, data=result)
+			eventStack.append(event)
 		return
 	
 class ExitUI(UIController):
-	def getEventsl(self, eventStack):
-		eventStack.append("exit")
+	def getEvents(self, eventStack):
+		event = events.Event(eventType.exit)
+		eventStack.append(event)
 		return

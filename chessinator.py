@@ -6,12 +6,14 @@ from chessberry.move import Move
 
 import sensors
 import uis
+import events
 
 def runEvents(eventStack):
 	print "running event stack"
 	for event in eventStack:
+		assert(isinstance(event, events.Event))
 		print "  event: " + str(event)
-		if event == "exit":
+		if event.type == events.EventType.exit:
 			return False
 	eventStack = []
 	return True
