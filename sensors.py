@@ -20,6 +20,22 @@ class CommandlineSensor(SensorController):
 
 class ExitSensor(SensorController):
 	def getEvents(self, eventStack):
-		event = events.Event(eventType.exit)
+		event = events.Event(events.EventType.exit)
 		eventStack.append(event)
 		return
+
+class SingleMoveSensor(SensorController):
+	def __init__(self):
+		self._eventCounter = 0
+
+	def getEvents(self, eventStack):
+		if self._eventCounter == 0:
+			self._eventCounter += 1
+			eventData = ["move", "e4"]
+			event = events.Event(events.EventType.sensor, data=eventData)
+			eventStack.append(event)
+		else:
+			event = events.Event(events.EventType.exit)
+			eventStack.append(event)
+
+			

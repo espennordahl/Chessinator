@@ -8,13 +8,19 @@ import sensors
 import uis
 import events
 
-def runEvents(eventStack):
+def runEvents(eventStack, game):
 	print "running event stack"
 	for event in eventStack:
 		assert(isinstance(event, events.Event))
 		print "  event: " + str(event)
 		if event.type == events.EventType.exit:
 			return False
+		elif event.type == events.EventType.sensor:
+			if event.data[0] == "move":
+				move = Move(game.sideToMove(), event.data[1])
+				game.applyMove(move)
+			else:
+				raise Exception("Unknown sensor event: " + str(event))
 	eventStack = []
 	return True
 
@@ -79,7 +85,7 @@ if __name__ == "__main__":
 			ui.getEvents(eventStack)
 			sensor.getEvents(eventStack)
 		## execute events
-		keepRunning = runEvents(eventStack)
+		keepRunning = runEvents(eventStack, game)
 
 	## shut down
 	print "Good night!"

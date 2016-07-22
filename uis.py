@@ -20,6 +20,10 @@ class CommandlineUI(UIController):
 	
 class ExitUI(UIController):
 	def getEvents(self, eventStack):
-		event = events.Event(eventType.exit)
+		event = events.Event(events.EventType.exit)
 		eventStack.append(event)
+		return
+
+class DummyUI(UIController):
+	def getEvents(self, eventStack):
 		return

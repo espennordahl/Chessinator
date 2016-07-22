@@ -19,8 +19,8 @@ class TestBasic(ChessTestCase):
 class TestTwoPlayerGame(ChessTestCase):
 	def testSingleMove(self):
 		'''Do one legal move, then close the program.
-		'''
-		return 
+		'''		
+		self.assertEquals(subprocess.call(['python', 'chessinator.py', '-s', 'singleMove', '-ui','dummy']), 0)
 
 	def testIllegalMove(self):
 		'''Do one illegal move, then close the program.

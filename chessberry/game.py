@@ -193,4 +193,5 @@ class Game():
 
 		return " ".join(fen)
 
-
+	def sideToMove(self):
+		return self._sideToMove
