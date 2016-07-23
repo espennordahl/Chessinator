@@ -30,7 +30,7 @@ class TestTwoPlayerGame(ChessTestCase):
 	def testFirstThreeMoves(self):
 		'''Do Three legal moves, then close the program.
 		'''
-		return
+		self.assertEquals(subprocess.call(['python', 'chessinator.py', '-s', 'threeMoves', '-ui','dummy']), 0)
 
 	def testFullGame(self):
 		'''Run through complete Carlsen vs Anand game

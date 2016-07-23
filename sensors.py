@@ -38,4 +38,18 @@ class SingleMoveSensor(SensorController):
 			event = events.Event(events.EventType.exit)
 			eventStack.append(event)
 
+class ThreeMovesSensor(SensorController):
+	def __init__(self):
+		self._eventCounter = 0
+		self._moves = [ ["move", "e4"], ["move", "d6"], ["move", "Nc3"] ]
+
+	def getEvents(self, eventStack):
+		if self._eventCounter < len(self._moves):
+			event = events.Event(events.EventType.sensor, data=self._moves[self._eventCounter])
+			eventStack.append(event)
+			self._eventCounter += 1
+		else:
+			event = events.Event(events.EventType.exit)
+			eventStack.append(event)
+
 			

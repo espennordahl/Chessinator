@@ -36,8 +36,6 @@ def makeUIController(uiArg):
 	else:
 		raise Exception("Failed to create sensor controller of type: " + uiArg)
 
-
-
 class Chessinator():
 	def __init__(self, sensor, ui):
 		## init game
@@ -52,14 +50,14 @@ class Chessinator():
 			assert(isinstance(event, events.Event))
 			print "  event: " + str(event)
 			if event.type == events.EventType.exit:
-				self._exit = True
+				self._runExitEvent(event)
 				return
 			elif event.type == events.EventType.sensor:
-				if event.data[0] == "move":
-					move = Move(self._game.sideToMove(), event.data[1])
-					self._game.applyMove(move)
-				else:
-					raise Exception("Unknown sensor event: " + str(event))
+				self._runSensorEvent(event)
+			elif event.type == events.EventType.user:
+				self._runUserEvent(event)
+			elif event.type == events.EventType.robot:
+				self._runRobotEvent(event)
 
 	def runEventLoop(self):
 		while(not self._exit):
@@ -72,6 +70,21 @@ class Chessinator():
 			## execute events
 			self.runEvents()
 
+	def _runExitEvent(self, event):
+		self._exit = True
+
+	def _runSensorEvent(self, event):
+		if event.data[0] == "move":
+			move = Move(self._game.sideToMove(), event.data[1])
+			self._game.applyMove(move)
+		else:
+			raise Exception("Unknown sensor event: " + str(event))
+	
+	def _runUserEvent(self, event):
+		return
+	
+	def _runRobotEvent(self, event):
+		return
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Chessinator game controller program.')
