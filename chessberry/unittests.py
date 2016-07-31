@@ -10,17 +10,6 @@ from utils import *
 from move import *
 from board import *
 
-## TODO:
-## - pawn takes
-## - any takes
-## - castle
-## - move legality pawns
-## - move legality queen
-## - move legality king
-## - move legality rook
-## - move legality bishop
-## - system event loop
-
 class ChessTestCase(unittest.TestCase):
 	''' Simple TestCase subclass to customize the output.
 	'''

@@ -1,4 +1,4 @@
-
+import logging
 
 from utils import *
 from piece import *
@@ -7,6 +7,8 @@ from board import *
 
 class Game():
 	def __init__(self):
+		self._logger = logging.getLogger('Game')
+		self._logger.debug('Initializing Game object')
 		## init board
 		self._board = Board()
 
@@ -18,12 +20,15 @@ class Game():
 		self._fullMoveCounter = 0
 
 		self.applyfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+		self._logger.debug('Completed initialing Game object')
 
 	def isMoveLegal(self, move):
 		return move.isLegal()
 	
 	def applyMove(self, move):
+		self._logger.info('Applying move: %s', move)
 		if not move.isLegal():
+			self._logger.info('Move was illegal. Aborting')
 			return False
 
 		move.conformMove(self._board)
@@ -31,6 +36,7 @@ class Game():
 		capture = False
 
 		if move.castleSide():
+			self._logger.debug('Identified move as castling. Proceeding')
 			## find rook
 			rookSquares = self._board.getSquares(piecetype=Type.rook, color=self._sideToMove)
 			castleRank = 0 if self._sideToMove == Color.white else 7
@@ -45,6 +51,7 @@ class Game():
 				raise Exception("Couldn't find matching rook in coord " + str(rookCoord.pgn) + " for castles move.\n" + self._board.ascii())
 
 			## move rook
+			self._logger.debug('Moving rook')
 			fromSquare = self._board.getSquare(rookCoord)
 			toSquareLetter = 3 if move.castleSide == CastleSide.queenside else 5
 			toSquare = self._board.getSquare(Coordinate(index=[toSquareLetter, castleRank]))
@@ -55,6 +62,7 @@ class Game():
 			fromSquare = self._board.getSquare(Coordinate(index=[4, castleRank]))
 			toSquareLetter = 2 if move.castleSide == CastleSide.queenside else 6
 			toSquare = self._board.getSquare(Coordinate(index=[toSquareLetter, castleRank]))
+			self._logger.debug('Moving king')
 			pieceToMove = fromSquare.piece
 			fromSquare.piece = None
 			toSquare.piece = pieceToMove
@@ -67,6 +75,8 @@ class Game():
 			else:
 				self._castlingAbility = self._castlingAbility.replace("k", "")
 				self._castlingAbility = self._castlingAbility.replace("q", "")
+			self._logger.debug('Updated castling ability to: %s', 
+								self._castlingAbility)
 		else:
 			## regular piece move
 			fromSquare = self._board.getSquare(move.getFromCoord())
@@ -87,25 +97,37 @@ class Game():
 				if pieceToMove.color() == Color.black:
 					enPassantTargetRankStr = "6"
 				self._enPassantTargetSquare = fromSquare.coord.pgn[0] + enPassantTargetRankStr
+		self._logger.debug('Updated en passant target square to: %s',
+							self._enPassantTargetSquare)
 
 		## The halfmove clock is reset after a pawn move or capture, and incremented otherwise
 		if pieceToMove.type() == Type.pawn or capture == True:
 			self._halfMoveClock = 0
 		else:
 			self._halfMoveClock += 1
+		self._logger.debug('Updated half move clock to: %s',
+							self._halfMoveClock)
 
 		if pieceToMove.color() == Color.black:
 			self._fullMoveCounter += 1
 			self._sideToMove = Color.white
 		else:
 			self._sideToMove = Color.black
-		
+
+		self._logger.debug('Updated full move counter to: %s',
+							self._fullMoveCounter)
+		self._logger.debug('Updated side to move to: %s',
+							self._sideToMove)	
 		if self._castlingAbility == "":
 			self._castlingAbility = "-"
+		self._logger.debug('Updated castling ability to: %s',
+							self._castlingAbility)
+		self._logger.info('Finished applying move: %s', move)
 	
 		return True
 
 	def applyfen(self, fenstring):
+		self._logger.info('Applying fen: %s', fenstring)
 		fenarray = fenstring.split(' ')
 		
 		# Piece placement. FEN placement starts at the 8th rank
@@ -142,6 +164,7 @@ class Game():
 
 		# Fullmove counter
 		self._fullMoveCounter = int(fenarray[5])
+		self._logger.info('Finished applying fen: %s', fenstring)
 
 	def fen(self):
 		# FEN is the Forsyth-Edwards Notation, which describes a chess position.

@@ -1,4 +1,5 @@
 from enum import Enum
+import logging
 
 from utils import *
 
@@ -11,25 +12,33 @@ class Type(Enum):
 	king = 5
 
 def makePiece(fenstring):
+	logger = logging.getLogger('Piece')
 	color = Color.white
 	if fenstring.islower():
 		color = Color.black
 	lowerFenstring = fenstring.lower()
 	if lowerFenstring == "p":
+		logging.debug('Creating piece: %s %s', color, 'Pawn')
 		return Pawn(color)
 	elif lowerFenstring == "n":
+		logging.debug('Creating piece: %s %s', color, 'Pawn')
 		return Knight(color)
 	elif lowerFenstring == "b":
+		logging.debug('Creating piece: %s %s', color, 'Pawn')
 		return Bishop(color)
 	elif lowerFenstring == "r":
+		logging.debug('Creating piece: %s %s', color, 'Pawn')
 		return Rook(color)
 	elif lowerFenstring == "q":
+		logging.debug('Creating piece: %s %s', color, 'Pawn')
 		return Queen(color)
 	elif lowerFenstring == "k":
+		logging.debug('Creating piece: %s %s', color, 'Pawn')
 		return King(color)
 
 class Piece():
 	def __init__(self, color):
+		self._logger = logging.getLogger('Piece')
 		self._color = color
 	
 	def type(self):

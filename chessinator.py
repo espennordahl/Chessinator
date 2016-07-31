@@ -1,5 +1,7 @@
 import argparse
 import sys
+import logging
+import random
 
 from chessberry.game import Game
 from chessberry.move import Move
@@ -38,6 +40,7 @@ def makeUIController(uiArg):
 
 class Chessinator():
 	def __init__(self, sensor, ui):
+		self._logger = logging.getLogger('Chessinator')
 		## init game
 		self._game = Game()
 		self._exit = False
@@ -45,10 +48,10 @@ class Chessinator():
 		self._ui = ui
 
 	def runEvents(self):
-		print "running event stack"
+		self._logger.debug('running event stack')
 		for event in self._eventStack:
 			assert(isinstance(event, events.Event))
-			print "  event: " + str(event)
+			self._logger.debug('Event: %s', event)
 			if event.type == events.EventType.exit:
 				self._runExitEvent(event)
 				return
@@ -95,17 +98,25 @@ if __name__ == "__main__":
 						metavar = 'ui',
 						default = 'commandline')
 	args = parser.parse_args()
-	print "Well hello there!"
+
+	# set up logger
+	logfilename = '/tmp/chessinator.' + str(random.randrange(9999999)) + '.log'
+	logformat = '[%(asctime)s] [%(levelname)s] %(name)s : %(message)s'
+	logging.basicConfig(filename=logfilename, filemode='w', format = logformat, level=logging.DEBUG)
+	logging.info('Starting application')
 	
 	## set up controllers
+	logging.debug('initializing sensor controller')
 	sensor = makeSensorController(args.sensorController)
+	logging.debug('initializing ui controller')
 	ui = makeUIController(args.uiController)
 
 	## init program
+	logging.debug('initializing program')
 	program = Chessinator(sensor, ui)
 
 	## run event loop
 	program.runEventLoop()
 
 	## shut down
-	print "Good night!"
+	logging.info('Exiting application')
