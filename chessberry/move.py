@@ -64,7 +64,7 @@ class Move():
 			if square.piece.canMove(square.coord, self._toCoord, board.obstacles(), takes=takes):
 				self._fromCoord = square.coord
 
-		if  self._fromCoord == None:
+		if  self._fromCoord is None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 		
 	def _conformKnightMove(self, board):
@@ -73,7 +73,7 @@ class Move():
 			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
 				self._fromCoord = square.coord
 
-		if  self._fromCoord == None:
+		if  self._fromCoord is None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 	
 	def _conformBishopMove(self, board):
@@ -82,7 +82,7 @@ class Move():
 			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
 				self._fromCoord = square.coord
 				
-		if self._fromCoord == None:
+		if self._fromCoord is None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 
 	def _conformQueenMove(self, board):
@@ -91,7 +91,7 @@ class Move():
 			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
 				self._fromCoord = square.coord
 				
-		if self._fromCoord == None:
+		if self._fromCoord is None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 
 	def _conformKingMove(self, board):
@@ -100,7 +100,7 @@ class Move():
 			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
 				self._fromCoord = square.coord
 				
-		if self._fromCoord == None:
+		if self._fromCoord is None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 
 
@@ -111,7 +111,7 @@ class Move():
 			if square.piece.canMove(square.coord, self._toCoord, board.obstacles()):
 				self._fromCoord = square.coord
 				
-		if self._fromCoord == None:
+		if self._fromCoord is None:
 			raise Exception("Couldnt find candidate piece for move " + self._pgn + ". Board:\n" + board.ascii())
 
 	def _conformCastlesMove(self, board):
@@ -130,12 +130,12 @@ class Move():
 		return True
 
 	def getToCoord(self):
-		if self._toCoord == None:
+		if self._toCoord is None:
 			raise Exception ("move not conformed yet. PGN: " + self._pgn)
 		return self._toCoord
 
 	def getFromCoord(self):
-		if self._fromCoord == None:
+		if self._fromCoord is None:
 			raise Exception ("move not conformed yet. PGN: " + self._pgn)
 		return self._fromCoord
 	

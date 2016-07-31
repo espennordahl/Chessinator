@@ -51,6 +51,13 @@ class Piece():
 	def canMove(self, fromCoord, toCoord, obstacles, takes=False):
 		raise Exception("Called abstract class method.")
 		return False
+	
+	def __eq__(self, other):
+		if self.type() != other.type():
+			return False
+		if self.color() != other.color():
+			return False
+		return True
 
 class Pawn(Piece):
 	def type(self):

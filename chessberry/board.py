@@ -59,6 +59,9 @@ class Coordinate:
 
 		if rank > 7 or rank < 0:
 			raise Exception("Invalid index for rank: " + str(rank) + ". Should be in 0-7 range.")
+	
+	def __eq__(self, other):
+		return self.index == other.index
 
 class Square():
 	def __init__(self, coordinate, piece=None):
@@ -69,7 +72,14 @@ class Square():
 		return not self.empty()
 	
 	def empty(self):
-		return self.piece == None
+		return self.piece is None
+	
+	def __eq__(self, other):
+		if self.coord != other.coord:
+			return False
+		if self.piece != other.piece:
+			return False
+		return True
 
 class Board:
 	def __init__(self):
@@ -90,7 +100,7 @@ class Board:
 		matchingSquares = []
 		for rank in self._ranks:
 			for square in rank:
-				if square.piece == None:
+				if square.piece is None:
 					continue
 				if piecetype:
 					if square.piece.type() != piecetype:
@@ -129,3 +139,15 @@ class Board:
 					string = string + ' '
 			string = string + '\n'
 		return string
+	
+	def __eq__(self, other):
+		return self.ascii() == other.ascii()
+		## TODO: why does this fail..?
+	#	for x in range(0,8):
+	#		for y in range(0,8):
+	#			if self._ranks[y][x] != other._ranks[y][x]:
+	#				return False
+	#	return True
+
+	def __repr__(self):
+		return self.ascii()

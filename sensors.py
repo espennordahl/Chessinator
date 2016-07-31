@@ -1,11 +1,58 @@
 import events
 
+from chessberry.board import *
+from chessberry.piece import *
+
 class SensorController():
 	def __init__(self):
 		return
 	
 	def getEvents(self, eventStack):
 		return
+
+class ReidSwitchSensor(SensorController):
+	initialBoard = 	[	[1, 1, 1, 1, 1, 1, 1, 1],
+						[1, 1, 1, 1, 1, 1, 1, 1],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[1, 1, 1, 1, 1, 1, 1, 1],
+						[1, 1, 1, 1, 1, 1, 1, 1]]
+	
+	def __init__(self):
+		self._board = Board()
+		self._binaryBoard = None 
+
+	def getEvents(self, eventStack):
+		return
+
+	def _newBinaryBoard(self, binaryBoard):
+		if self._binaryBoard is None:
+			if binaryBoard == ReidSwitchSensor.initialBoard:
+				self._initBoard()
+
+	def _initBoard(self):
+		self._binaryBoard = ReidSwitchSensor.initialBoard
+		for x in range(0,8):
+			fen = "RNBQKBNR"
+			coordinate = Coordinate(index=[x,0])
+			square = self._board.getSquare(coordinate)
+			square.piece = makePiece(fen[x])
+		for x in range(0,8):	
+			coordinate = Coordinate(index=[x,1])
+			square = self._board.getSquare(coordinate)
+			square.piece = makePiece("P")
+		for x in range(0,8):	
+			coordinate = Coordinate(index=[x,6])
+			square = self._board.getSquare(coordinate)
+			square.piece = makePiece("p")
+		for x in range(0,8):	
+	 		fen = "rnbqkbnr"
+			coordinate = Coordinate(index=[x,7])
+			square = self._board.getSquare(coordinate)
+			square.piece = makePiece(fen[x])
+
 
 class CommandlineSensor(SensorController):
 	def getEvents(self, eventStack):

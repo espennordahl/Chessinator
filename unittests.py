@@ -3,6 +3,8 @@ from test import test_support
 import subprocess
 
 from chessberry import unittests as chessberrytests
+from chessberry.game import *
+from sensors import ReidSwitchSensor
 
 class ChessTestCase(unittest.TestCase):
 	''' Simple TestCase subclass to customize the output.
@@ -37,9 +39,37 @@ class TestTwoPlayerGame(ChessTestCase):
 		'''
 		return
 
+class TestReidSwitchSensor(ChessTestCase):
+	'''The reid switch sensor queries the reid switch mux in a loop,
+		so we don't really have a public API to run clean unit tests
+		with. For that reason, we're testing using private API directly.
+		'''
+	def testStartBoard(self):
+		sensor = ReidSwitchSensor()
+		binaryBoard = [	[1, 1, 1, 1, 1, 1, 1, 1],
+						[1, 1, 1, 1, 1, 1, 1, 1],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[1, 1, 1, 1, 1, 1, 1, 1],
+						[1, 1, 1, 1, 1, 1, 1, 1]]
+
+		sensor._newBinaryBoard(binaryBoard)
+
+		self.assertEquals(sensor._binaryBoard, binaryBoard)
+		
+		game = Game()
+		self.assertEquals(sensor._board, game._board)
+		return
+	
+	def testFirstThreeMoves(self):
+		return
+
 def test_main():
 	test_support.run_unittest(	TestBasic,
-								TestTwoPlayerGame
+								TestTwoPlayerGame,
+								TestReidSwitchSensor,
 								)
 	return
 
