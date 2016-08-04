@@ -24,7 +24,7 @@ boolean abs_mode = false;   //0 = incremental; 1 = absolute
 //default to inches for units
 float x_units = X_STEPS_PER_MM;
 float y_units = Y_STEPS_PER_MM;
-float z_units = Z_STEPS_PER_MM;
+//float z_units = Z_STEPS_PER_MM;
 float curve_section = CURVE_SECTION_MM;
 
 //our direction vars
@@ -219,7 +219,7 @@ void process_string(char instruction[], int size)
 			case 20:
 				x_units = X_STEPS_PER_INCH;
 				y_units = Y_STEPS_PER_INCH;
-				z_units = Z_STEPS_PER_INCH;
+//				z_units = Z_STEPS_PER_INCH;
 				curve_section = CURVE_SECTION_INCHES;
 				
 				calculate_deltas();
@@ -229,7 +229,7 @@ void process_string(char instruction[], int size)
 			case 21:
 				x_units = X_STEPS_PER_MM;
 				y_units = Y_STEPS_PER_MM;
-				z_units = Z_STEPS_PER_MM;
+//				z_units = Z_STEPS_PER_MM;
 				curve_section = CURVE_SECTION_MM;
 				
 				calculate_deltas();
@@ -334,7 +334,7 @@ void process_string(char instruction[], int size)
                 pinMode(Y_STEP_PIN,OUTPUT);
                 digitalWrite(Y_STEP_PIN,LOW);
             }
-            if (has_command('Z', instruction, size)){
+/*            if (has_command('Z', instruction, size)){
 		int TEMP_PIN = search_string('Z', instruction, size);
                 
                   if(Z_STEP_PIN!=TEMP_PIN){
@@ -347,6 +347,7 @@ void process_string(char instruction[], int size)
                     }
                   }
             }
+            */
              break;
             case 2:
              //set XYZ DIR PIN
@@ -360,11 +361,12 @@ void process_string(char instruction[], int size)
                 pinMode(Y_DIR_PIN,OUTPUT);
                 digitalWrite(Y_DIR_PIN,LOW);
             }
-            if (has_command('Z', instruction, size)){
+            /*if (has_command('Z', instruction, size)){
 		Z_DIR_PIN = search_string('Z', instruction, size);
                 pinMode(Z_DIR_PIN,OUTPUT);
                 digitalWrite(Z_DIR_PIN,LOW);
             }
+            */
             break;
             case 3:
              //set XYZ Min PIN
@@ -376,10 +378,12 @@ void process_string(char instruction[], int size)
 		Y_MIN_PIN = search_string('Y', instruction, size);
                 pinMode(Y_MIN_PIN,INPUT_PULLUP);
             }
+            /*
             if (has_command('Z', instruction, size)){
 		Z_MIN_PIN = search_string('Z', instruction, size);
                 pinMode(Z_MIN_PIN,INPUT_PULLUP);
             }
+            */
             break;
             case 4:
              //set XYZ Max PIN
@@ -391,17 +395,21 @@ void process_string(char instruction[], int size)
 		Y_MAX_PIN = search_string('Y', instruction, size);
                 pinMode(Y_MAX_PIN,INPUT_PULLUP);
             }
+            /*
             if (has_command('Z', instruction, size)){
 		Z_MAX_PIN = search_string('Z', instruction, size);
                 pinMode(Z_MAX_PIN,INPUT_PULLUP);
             }
+            */
             break;
             case 5:
+            /*
              //ENABLE SERVO MOTOR FOR Z
              if(has_command('Z',instruction,size)){
                Z_ENABLE_SERVO = search_string('Z', instruction, size);
                
              }
+             */
              break;
              case 6:
              //set XYZ STEPS PER MM
@@ -414,10 +422,12 @@ void process_string(char instruction[], int size)
 		Y_STEPS_PER_MM = search_string('Y', instruction, size);
                 y_units = Y_STEPS_PER_MM;
             }
+            /*
             if (has_command('Z', instruction, size)){
 		Z_STEPS_PER_MM = search_string('Z', instruction, size);
                 z_units = Z_STEPS_PER_MM;
             }
+            */
             break;
             case 7:
              //set XYZ FEEDRATE
@@ -426,9 +436,11 @@ void process_string(char instruction[], int size)
             }else if (has_command('Y', instruction, size)){
 		FAST_XY_FEEDRATE = search_string('Y', instruction, size);
             }
+            /*
             if (has_command('Z', instruction, size)){
 		FAST_Z_FEEDRATE = search_string('Z', instruction, size);
             }
+            */
             break;
             case 8:
              //set XYZ INVERT LIMIT SWITCH

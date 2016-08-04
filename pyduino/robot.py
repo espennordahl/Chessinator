@@ -23,13 +23,22 @@ class Robot:
 			if "start" in line:
 				self._isReady = True
 				self._position = [0.,0.]
+				print "bot ready. Sending config instructions."
+				self._sendSerial("$1 X11 Y9 ZA6")
+				self._sendSerial("$2 X10 Y3 ZA1")
+				self._sendSerial("$3 XA0 Y12 Z12")
+				self._sendSerial("$4 XA1 Y13 Z13")
+				self._sendSerial("$6 X500 Y500.0 Z500")
+				self._sendSerial("G90")
+				self._sendSerial("G21")
 				return self._isReady
 	
-	def sendSerial(self, message):
+	def _sendSerial(self, message):
+		print "sending: " + message
 		self._serial.write(message)
 		line = self._serial.readline()
-		print line
-		return True
+		print "received: " + line
+		return line
 	
 	def moveTo(self, targetX, targetY, speed=DEFAULT_MOTOR_SPEED):
 		return self.moveToX(targetX, speed) and self.moveToY(targetY, speed)
@@ -74,9 +83,7 @@ class Robot:
 		if type(speed) is not int and type(target) is not float:
 			print "target speed invalid: ", speed
 			return False
-		self._serial.write("G1 " + axis + str(target) + " F" + str(speed))
-		line = self._serial.readline()
-		print line
+		line = self._sendSerial("G1 " + axis + str(target) + " F" + str(speed))
 		if "ok" in line:
 			if axis == "X":
 				self._position[0] = target

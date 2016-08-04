@@ -34,11 +34,11 @@ void init_steppers()
 	pinMode(Y_MIN_PIN, INPUT_PULLUP);
 	pinMode(Y_MAX_PIN, INPUT_PULLUP);
 	
-	pinMode(Z_STEP_PIN, OUTPUT);
-	pinMode(Z_DIR_PIN, OUTPUT);
-	pinMode(Z_ENABLE_PIN, OUTPUT);
-	pinMode(Z_MIN_PIN, INPUT_PULLUP);
-	pinMode(Z_MAX_PIN, INPUT_PULLUP);
+//	pinMode(Z_STEP_PIN, OUTPUT);
+//	pinMode(Z_DIR_PIN, OUTPUT);
+//	pinMode(Z_ENABLE_PIN, OUTPUT);
+//	pinMode(Z_MIN_PIN, INPUT_PULLUP);
+//	pinMode(Z_MAX_PIN, INPUT_PULLUP);
 	
 	//figure our stuff.
 	calculate_deltas();
@@ -77,7 +77,7 @@ void dda_move(long micro_delay)
 	//enable our steppers
 	digitalWrite(X_ENABLE_PIN, HIGH);
 	digitalWrite(Y_ENABLE_PIN, HIGH);
-	digitalWrite(Z_ENABLE_PIN, HIGH);
+//	digitalWrite(Z_ENABLE_PIN, HIGH);
 	
 	//figure out our deltas
 	max_delta = max(delta_steps.x, delta_steps.y);
@@ -103,7 +103,7 @@ void dda_move(long micro_delay)
 	{
 		x_can_step = can_step(X_MIN_PIN, X_MAX_PIN, current_steps.x, target_steps.x, x_direction);
 		y_can_step = can_step(Y_MIN_PIN, Y_MAX_PIN, current_steps.y, target_steps.y, y_direction);
-		z_can_step = can_step(Z_MIN_PIN, Z_MAX_PIN, current_steps.z, target_steps.z, z_direction);
+//		z_can_step = can_step(Z_MIN_PIN, Z_MAX_PIN, current_steps.z, target_steps.z, z_direction);
 
 		if (x_can_step)
 		{
@@ -137,7 +137,7 @@ void dda_move(long micro_delay)
 			}
 		}
 		
-		if (z_can_step)
+/*		if (z_can_step)
 		{
 			z_counter += delta_steps.z;
 			
@@ -154,7 +154,7 @@ void dda_move(long micro_delay)
 					current_steps.z--;
 			}
 		}
-		
+	*/	
 		
 				
 		//wait for next step.
@@ -255,11 +255,11 @@ void calculate_deltas()
 	//set our steps current, target, and delta
 	current_steps.x = to_steps(x_units, current_units.x);
 	current_steps.y = to_steps(y_units, current_units.y);
-	current_steps.z = to_steps(z_units, current_units.z);
+//	current_steps.z = to_steps(z_units, current_units.z);
 
 	target_steps.x = to_steps(x_units, target_units.x);
 	target_steps.y = to_steps(y_units, target_units.y);
-	target_steps.z = to_steps(z_units, target_units.z);
+//	target_steps.z = to_steps(z_units, target_units.z);
 
 	delta_steps.x = abs(target_steps.x - current_steps.x);
 	delta_steps.y = abs(target_steps.y - current_steps.y);
@@ -273,7 +273,7 @@ void calculate_deltas()
 	//set our direction pins as well
 	digitalWrite(X_DIR_PIN, x_direction);
 	digitalWrite(Y_DIR_PIN, y_direction);
-	digitalWrite(Z_DIR_PIN, z_direction);
+//	digitalWrite(Z_DIR_PIN, z_direction);
 }
 
 
@@ -309,9 +309,9 @@ long calculate_feedrate_delay(float feedrate)
 
 long getMaxSpeed()
 {
-	if (delta_steps.z > 0)
+/*	if (delta_steps.z > 0)
 		return calculate_feedrate_delay(FAST_Z_FEEDRATE);
-	else
+	else*/
 		return calculate_feedrate_delay(FAST_XY_FEEDRATE);
 }
 
@@ -320,5 +320,5 @@ void disable_steppers()
 	//enable our steppers
 	digitalWrite(X_ENABLE_PIN, LOW);
 	digitalWrite(Y_ENABLE_PIN, LOW);
-	digitalWrite(Z_ENABLE_PIN, LOW);
+//	digitalWrite(Z_ENABLE_PIN, LOW);
 }
