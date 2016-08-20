@@ -2,13 +2,11 @@
 struct LongPoint {
 	long x;
 	long y;
- 	long z;
 };
 
 struct FloatPoint {
 	float x;
 	float y;
- 	float z;
 };
 
 FloatPoint current_units;
@@ -24,13 +22,11 @@ boolean abs_mode = false;   //0 = incremental; 1 = absolute
 //default to inches for units
 float x_units = X_STEPS_PER_MM;
 float y_units = Y_STEPS_PER_MM;
-//float z_units = Z_STEPS_PER_MM;
 float curve_section = CURVE_SECTION_MM;
 
 //our direction vars
 byte x_direction = 1;
 byte y_direction = 1;
-byte z_direction = 1;
 
 //init our string processing
 void init_process_string()
@@ -59,7 +55,6 @@ void process_string(char instruction[], int size)
 	FloatPoint fp;
 	fp.x = 0.0;
 	fp.y = 0.0;
-	fp.z = 0.0;
 
 	byte code = 0;
 	
@@ -68,8 +63,7 @@ void process_string(char instruction[], int size)
 	if (!has_command('$', instruction, size)&&(
 		has_command('G', instruction, size) ||
 		has_command('X', instruction, size) ||
-		has_command('Y', instruction, size) ||
-		has_command('Z', instruction, size))
+		has_command('Y', instruction, size))
 	)
 	{
 		//which one?
@@ -79,8 +73,11 @@ void process_string(char instruction[], int size)
 		switch (code)
 		{
 			case 0:
+				break;
 			case 1:
+				break;
 			case 2:
+				break;
 			case 3:
 				if(abs_mode)
 				{
@@ -95,20 +92,12 @@ void process_string(char instruction[], int size)
 						fp.y = search_string('Y', instruction, size);
 					else
 						fp.y = current_units.y;
-				
-					if (has_command('Z', instruction, size))
-						fp.z = search_string('Z', instruction, size);
-					else
-						fp.z = current_units.z;
 				}
 				else
 				{
 					fp.x = search_string('X', instruction, size) + current_units.x;
 					fp.y = search_string('Y', instruction, size) + current_units.y;
-					fp.z = search_string('Z', instruction, size) + current_units.z;
 				}
-
-                                targetPosServo = fp.z;
 			break;
 		}
 		//do something!
@@ -118,10 +107,10 @@ void process_string(char instruction[], int size)
 			//Linear Interpolation
 			//these are basically the same thing.
 			case 0:
+				break;
 			case 1:
 				//set our target.
-				set_target(fp.x, fp.y, fp.z);
-                                servo.write(targetPosServo); 
+				set_target(fp.x, fp.y);
 				//do we have a set speed?
 				if (has_command('G', instruction, size))
 				{
@@ -157,6 +146,7 @@ void process_string(char instruction[], int size)
 			
 			//Clockwise arc
 			case 2:
+				break;
 			//Counterclockwise arc
 			case 3:
 				FloatPoint cent;
@@ -196,7 +186,7 @@ void process_string(char instruction[], int size)
 					step = (code == 3) ? s : steps - s; // Work backwards for CW
 					newPoint.x = cent.x + radius * cos(angleA + angle * ((float) step / steps));
 					newPoint.y = cent.y + radius * sin(angleA + angle * ((float) step / steps));
-					set_target(newPoint.x, newPoint.y, fp.z);
+					set_target(newPoint.x, newPoint.y);
 
 					// Need to calculate rate for each section of curve
 					if (feedrate > 0)
@@ -219,7 +209,6 @@ void process_string(char instruction[], int size)
 			case 20:
 				x_units = X_STEPS_PER_INCH;
 				y_units = Y_STEPS_PER_INCH;
-//				z_units = Z_STEPS_PER_INCH;
 				curve_section = CURVE_SECTION_INCHES;
 				
 				calculate_deltas();
@@ -229,7 +218,6 @@ void process_string(char instruction[], int size)
 			case 21:
 				x_units = X_STEPS_PER_MM;
 				y_units = Y_STEPS_PER_MM;
-//				z_units = Z_STEPS_PER_MM;
 				curve_section = CURVE_SECTION_MM;
 				
 				calculate_deltas();
@@ -245,7 +233,6 @@ void process_string(char instruction[], int size)
 			case 30:
 				fp.x = search_string('X', instruction, size);
 				fp.y = search_string('Y', instruction, size);
-				fp.z = search_string('Z', instruction, size);
 
 				//set our target.
 				if(abs_mode)
@@ -254,19 +241,17 @@ void process_string(char instruction[], int size)
 						fp.x = current_units.x;
 					if (!has_command('Y', instruction, size))
 						fp.y = current_units.y;
-					if (!has_command('Z', instruction, size))
-						fp.z = current_units.z;
 						
-					set_target(fp.x, fp.y, fp.z);
+					set_target(fp.x, fp.y);
 				}
 				else
-					set_target(current_units.x + fp.x, current_units.y + fp.y, current_units.z + fp.z);
+					set_target(current_units.x + fp.x, current_units.y + fp.y);
 				
 				//go there.
 				dda_move(getMaxSpeed());
 
 				//go home.
-				set_target(0.0, 0.0, 0.0);
+				set_target(0.0, 0.0);
 				goto_machine_zero();
 			break;
 
@@ -283,20 +268,8 @@ void process_string(char instruction[], int size)
 
 			//Set as home
 			case 92:
-				set_position(0.0, 0.0, 0.0);
+				set_position(0.0, 0.0);
 			break;
-
-/*
-			//Inverse Time Feed Mode
-			case 93:
-
-			break;  //TODO: add this
-
-			//Feed per Minute Mode
-			case 94:
-
-			break;  //TODO: add this
-*/
 
 			default:
 				Serial.print("huh? G");
@@ -323,7 +296,7 @@ void process_string(char instruction[], int size)
             code = search_string('$', instruction, size);
             switch(code){
               case 1:
-             //set XYZ STEP PIN
+             //set XY STEP PIN
              if (has_command('X', instruction, size)){
 		X_STEP_PIN = search_string('X', instruction, size);
                 pinMode(X_STEP_PIN,OUTPUT);
@@ -334,23 +307,9 @@ void process_string(char instruction[], int size)
                 pinMode(Y_STEP_PIN,OUTPUT);
                 digitalWrite(Y_STEP_PIN,LOW);
             }
-/*            if (has_command('Z', instruction, size)){
-		int TEMP_PIN = search_string('Z', instruction, size);
-                
-                  if(Z_STEP_PIN!=TEMP_PIN){
-                    Z_STEP_PIN = TEMP_PIN;
-                    if(Z_ENABLE_SERVO==1){
-                      servo.attach(Z_STEP_PIN);
-                    }else{
-                       pinMode(Z_STEP_PIN,OUTPUT);  
-                       digitalWrite(Z_STEP_PIN,LOW);   
-                    }
-                  }
-            }
-            */
-             break;
+            break;
             case 2:
-             //set XYZ DIR PIN
+             //set XY DIR PIN
              if (has_command('X', instruction, size)){
 		X_DIR_PIN = search_string('X', instruction, size);
                 pinMode(X_DIR_PIN,OUTPUT);
@@ -360,13 +319,7 @@ void process_string(char instruction[], int size)
 		Y_DIR_PIN = search_string('Y', instruction, size);
                 pinMode(Y_DIR_PIN,OUTPUT);
                 digitalWrite(Y_DIR_PIN,LOW);
-            }
-            /*if (has_command('Z', instruction, size)){
-		Z_DIR_PIN = search_string('Z', instruction, size);
-                pinMode(Z_DIR_PIN,OUTPUT);
-                digitalWrite(Z_DIR_PIN,LOW);
-            }
-            */
+			}
             break;
             case 3:
              //set XYZ Min PIN
@@ -378,15 +331,9 @@ void process_string(char instruction[], int size)
 		Y_MIN_PIN = search_string('Y', instruction, size);
                 pinMode(Y_MIN_PIN,INPUT_PULLUP);
             }
-            /*
-            if (has_command('Z', instruction, size)){
-		Z_MIN_PIN = search_string('Z', instruction, size);
-                pinMode(Z_MIN_PIN,INPUT_PULLUP);
-            }
-            */
             break;
             case 4:
-             //set XYZ Max PIN
+             //set XY Max PIN
              if (has_command('X', instruction, size)){
 		X_MAX_PIN = search_string('X', instruction, size);
                 pinMode(X_MAX_PIN,INPUT_PULLUP);
@@ -395,24 +342,11 @@ void process_string(char instruction[], int size)
 		Y_MAX_PIN = search_string('Y', instruction, size);
                 pinMode(Y_MAX_PIN,INPUT_PULLUP);
             }
-            /*
-            if (has_command('Z', instruction, size)){
-		Z_MAX_PIN = search_string('Z', instruction, size);
-                pinMode(Z_MAX_PIN,INPUT_PULLUP);
-            }
-            */
-            break;
+           	break;
             case 5:
-            /*
-             //ENABLE SERVO MOTOR FOR Z
-             if(has_command('Z',instruction,size)){
-               Z_ENABLE_SERVO = search_string('Z', instruction, size);
-               
-             }
-             */
-             break;
+            break;
              case 6:
-             //set XYZ STEPS PER MM
+             //set XY STEPS PER MM
              if (has_command('X', instruction, size)){
 		X_STEPS_PER_MM = search_string('X', instruction, size);
                 x_units = X_STEPS_PER_MM;
@@ -422,30 +356,19 @@ void process_string(char instruction[], int size)
 		Y_STEPS_PER_MM = search_string('Y', instruction, size);
                 y_units = Y_STEPS_PER_MM;
             }
-            /*
-            if (has_command('Z', instruction, size)){
-		Z_STEPS_PER_MM = search_string('Z', instruction, size);
-                z_units = Z_STEPS_PER_MM;
-            }
-            */
             break;
             case 7:
-             //set XYZ FEEDRATE
+             //set XY FEEDRATE
              if (has_command('X', instruction, size)){
 		FAST_XY_FEEDRATE = search_string('X', instruction, size);
             }else if (has_command('Y', instruction, size)){
 		FAST_XY_FEEDRATE = search_string('Y', instruction, size);
             }
-            /*
-            if (has_command('Z', instruction, size)){
-		FAST_Z_FEEDRATE = search_string('Z', instruction, size);
-            }
-            */
             break;
             case 8:
-             //set XYZ INVERT LIMIT SWITCH
+             //set XY INVERT LIMIT SWITCH
              if (has_command('S', instruction, size)){
-		SENSORS_INVERTING = search_string('S', instruction, size);
+			SENSORS_INVERTING = search_string('S', instruction, size);
             }
             break;
             }
