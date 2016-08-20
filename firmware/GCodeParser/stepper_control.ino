@@ -29,6 +29,13 @@ void init_steppers()
 	pinMode(Y_ENABLE_PIN, OUTPUT);
 	pinMode(Y_MIN_PIN, INPUT_PULLUP);
 	pinMode(Y_MAX_PIN, INPUT_PULLUP);
+
+	digitalWrite(X_STEP_PIN, LOW);
+	digitalWrite(X_DIR_PIN, LOW);
+	
+	digitalWrite(Y_STEP_PIN, LOW);
+	digitalWrite(Y_DIR_PIN, LOW);
+	
 	
 	//figure our stuff.
 	calculate_deltas();

@@ -298,12 +298,12 @@ void process_string(char instruction[], int size)
               case 1:
              //set XY STEP PIN
              if (has_command('X', instruction, size)){
-		X_STEP_PIN = search_string('X', instruction, size);
+				X_STEP_PIN = search_string('X', instruction, size);
                 pinMode(X_STEP_PIN,OUTPUT);
                 digitalWrite(X_STEP_PIN,LOW);
             }
             if (has_command('Y', instruction, size)){
-		Y_STEP_PIN = search_string('Y', instruction, size);
+				Y_STEP_PIN = search_string('Y', instruction, size);
                 pinMode(Y_STEP_PIN,OUTPUT);
                 digitalWrite(Y_STEP_PIN,LOW);
             }
@@ -311,12 +311,12 @@ void process_string(char instruction[], int size)
             case 2:
              //set XY DIR PIN
              if (has_command('X', instruction, size)){
-		X_DIR_PIN = search_string('X', instruction, size);
+				X_DIR_PIN = search_string('X', instruction, size);
                 pinMode(X_DIR_PIN,OUTPUT);
                 digitalWrite(X_DIR_PIN,LOW);
             }
             if (has_command('Y', instruction, size)){
-		Y_DIR_PIN = search_string('Y', instruction, size);
+				Y_DIR_PIN = search_string('Y', instruction, size);
                 pinMode(Y_DIR_PIN,OUTPUT);
                 digitalWrite(Y_DIR_PIN,LOW);
 			}
@@ -324,22 +324,22 @@ void process_string(char instruction[], int size)
             case 3:
              //set XYZ Min PIN
              if (has_command('X', instruction, size)){
-		X_MIN_PIN = search_string('X', instruction, size);
+				X_MIN_PIN = search_string('X', instruction, size);
                 pinMode(X_MIN_PIN,INPUT_PULLUP);
             }
             if (has_command('Y', instruction, size)){
-		Y_MIN_PIN = search_string('Y', instruction, size);
+				Y_MIN_PIN = search_string('Y', instruction, size);
                 pinMode(Y_MIN_PIN,INPUT_PULLUP);
             }
             break;
             case 4:
              //set XY Max PIN
              if (has_command('X', instruction, size)){
-		X_MAX_PIN = search_string('X', instruction, size);
+				X_MAX_PIN = search_string('X', instruction, size);
                 pinMode(X_MAX_PIN,INPUT_PULLUP);
             }
             if (has_command('Y', instruction, size)){
-		Y_MAX_PIN = search_string('Y', instruction, size);
+				Y_MAX_PIN = search_string('Y', instruction, size);
                 pinMode(Y_MAX_PIN,INPUT_PULLUP);
             }
            	break;
@@ -348,21 +348,21 @@ void process_string(char instruction[], int size)
              case 6:
              //set XY STEPS PER MM
              if (has_command('X', instruction, size)){
-		X_STEPS_PER_MM = search_string('X', instruction, size);
+				X_STEPS_PER_MM = search_string('X', instruction, size);
                 x_units = X_STEPS_PER_MM;
                 Serial.println(x_units);
             }
             if (has_command('Y', instruction, size)){
-		Y_STEPS_PER_MM = search_string('Y', instruction, size);
+				Y_STEPS_PER_MM = search_string('Y', instruction, size);
                 y_units = Y_STEPS_PER_MM;
             }
             break;
             case 7:
              //set XY FEEDRATE
              if (has_command('X', instruction, size)){
-		FAST_XY_FEEDRATE = search_string('X', instruction, size);
+				FAST_XY_FEEDRATE = search_string('X', instruction, size);
             }else if (has_command('Y', instruction, size)){
-		FAST_XY_FEEDRATE = search_string('Y', instruction, size);
+				FAST_XY_FEEDRATE = search_string('Y', instruction, size);
             }
             break;
             case 8:
