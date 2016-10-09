@@ -31,6 +31,8 @@ class ReidSwitchSensor(SensorController):
 		if self._binaryBoard is None:
 			if binaryBoard == ReidSwitchSensor.initialBoard:
 				self._initBoard()
+		else:
+			self._conformBoardChange(binaryBoard)
 
 	def _initBoard(self):
 		self._binaryBoard = ReidSwitchSensor.initialBoard
@@ -53,6 +55,35 @@ class ReidSwitchSensor(SensorController):
 			square = self._board.getSquare(coordinate)
 			square.piece = makePiece(fen[x])
 
+	def _conformBoardChange(self, binaryBoard):
+		## find diff
+		changes = []
+		diff = 0
+		for x in range(0,8):
+			for y in range(0,8):
+				if self._binaryBoard[y][x] != binaryBoard[y][x]:
+					changes.append(Coordinate(index=[x,y]))
+					diff += self._binaryBoard[y][x] - binaryBoard[y][x]
+		if len(changes) == 2:
+			if diff == 0:
+				## Simple piece move
+				fromCoord = None
+				toCoord = None
+				for change in changes:
+					if self._binaryBoard[change.index[1]][change.index[0]] == 0:
+						fromCoord = change
+					else:
+						toCoord = change
+				assert(fromCoord)
+				assert(toCoord)
+			# apply the move internally
+			fromSquare = self._board.getSquare(fromCoord)
+			toSquare = self._board.getSquare(toCoord)
+			pieceToMove = fromSquare.piece
+			fromSquare.piece = None
+			toSquare.piece = pieceToMove
+
+		self._binaryBoard = binaryBoard
 
 class CommandlineSensor(SensorController):
 	def getEvents(self, eventStack):

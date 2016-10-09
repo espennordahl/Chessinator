@@ -55,14 +55,45 @@ class TestReidSwitchSensor(ChessTestCase):
 						[1, 1, 1, 1, 1, 1, 1, 1],
 						[1, 1, 1, 1, 1, 1, 1, 1]]
 
-		sensor._newBinaryBoard(binaryBoard)
+		sensor._newBinaryBoard(copy.copy(binaryBoard))
 
 		self.assertEquals(sensor._binaryBoard, binaryBoard)
 		
 		game = Game()
 		self.assertEquals(sensor._board, game._board)
 		return
-	
+
+	def testSingleMove(self):
+		sensor = ReidSwitchSensor()
+		binaryBoard = [	[1, 1, 1, 1, 1, 1, 1, 1],
+						[1, 1, 1, 1, 1, 1, 1, 1],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[1, 1, 1, 1, 1, 1, 1, 1],
+						[1, 1, 1, 1, 1, 1, 1, 1]]
+
+		sensor._newBinaryBoard(copy.copy(binaryBoard))
+
+		binaryBoard = [	[1, 1, 1, 1, 1, 1, 1, 1],
+						[1, 1, 1, 1, 0, 1, 1, 1],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 1, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[0, 0, 0, 0, 0, 0, 0, 0],
+						[1, 1, 1, 1, 1, 1, 1, 1],
+						[1, 1, 1, 1, 1, 1, 1, 1]]
+
+		
+		sensor._newBinaryBoard(copy.copy(binaryBoard))
+		self.assertEquals(sensor._binaryBoard, copy.copy(binaryBoard))
+		
+		game = Game()
+		game.applyMove(Move(Color.white, "e4"))
+		self.assertEquals(sensor._board, game._board)
+		return
+		
 	def testFirstThreeMoves(self):
 		return
 

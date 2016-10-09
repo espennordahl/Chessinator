@@ -24,11 +24,11 @@ class Robot:
 				self._isReady = True
 				self._position = [0.,0.]
 				print "bot ready. Sending config instructions."
-				self._sendSerial("$1 X11 Y9 ZA6")
-				self._sendSerial("$2 X10 Y3 ZA1")
-				self._sendSerial("$3 XA0 Y12 Z12")
-				self._sendSerial("$4 XA1 Y13 Z13")
-				self._sendSerial("$6 X500 Y500.0 Z500")
+				self._sendSerial("$1 X11 Y9 ZA6") #xy step pin
+				self._sendSerial("$2 X10 Y3 ZA1") #xy dir pin
+				self._sendSerial("$3 XA0 Y12 Z12") # xy min pin
+				self._sendSerial("$4 XA1 Y13 Z13") # xy max pin
+				self._sendSerial("$6 X500 Y500.0 Z500") # xy steps pmm
 				self._sendSerial("G90")
 				self._sendSerial("G21")
 				return self._isReady
